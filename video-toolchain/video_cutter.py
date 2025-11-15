@@ -2,6 +2,7 @@ import os
 import sys
 import pandas as pd
 import moviepy as mp
+from PIL import Image
 
 def timestamp_to_seconds(timestamp):
     hours = int(timestamp[0:2])
@@ -34,7 +35,7 @@ def extract_timestamps(csv_path, video_duration):
         # transform the timestamps to seconds and add them to the list
         start_sec = timestamp_to_seconds(start)
         end_sec = timestamp_to_seconds(end)
-        # validate timestamps
+        # only add valid timestamps
         if timestamp_isvalid(start_sec, end_sec, video_duration):
             timestamps.append((start_sec, end_sec))
         else:
@@ -67,22 +68,25 @@ def main():
     timestamps = extract_timestamps(timestamps_csv_path, video.duration)
 
     # create or replace output directory
-    output_dir = "extracted_clips"
+    output_dir = "extracted_frames"
     os.makedirs(output_dir, exist_ok=True)
 
-    # extract and save video clips based on the timestamps
-    clip_number = 1
+    # extract and save frames from subclips based on the timestamps
+    frame_number = 1
     for (start, end) in timestamps:
         subclip = video.subclipped(start, end)
 
         # resize to 720p for smaller file size and smaller ML model input size
         subclip = subclip.resized(height=720)
 
-        # create a file in the output directory and write the subclip to it
-        subclip_path = os.path.join(output_dir, f"clip_{clip_number}.mp4")
-        subclip.write_videofile(subclip_path)
+        # extract 10 equidistant individual frames per second save them as JPEG images 
+        for frame in subclip.iter_frames(fps = 10, dtype = 'uint8'):
+            # create the path for the output frame image with zero-padded numbering
+            frame_path = os.path.join(output_dir, f"frame_{frame_number:05d}.jpg")
+            Image.fromarray(frame).save(frame_path, "JPEG")
+            frame_number += 1
+
         subclip.close()
-        clip_number += 1
 
     video.close()
 
