@@ -4,11 +4,14 @@ import pandas as pd
 import moviepy as mp
 from PIL import Image
 
+OUTPUT_DIR = "extracted_frames"
+
 def timestamp_to_seconds(timestamp):
     hours = int(timestamp[0:2])
     minutes = int(timestamp[3:5])
     seconds = int(timestamp[6:8])
     return hours * 3600 + minutes * 60 + seconds
+
 
 def timestamp_isvalid(start, end, video_duration):
     # negative timestamps not allowed
@@ -24,11 +27,11 @@ def timestamp_isvalid(start, end, video_duration):
 
     return True
 
+
 def extract_timestamps(csv_path, video_duration):
     df = pd.read_csv(csv_path)
-    entries_count = df['start'].size
     
-    # create a list of tuplets from the timestamps CSV
+    # create a list of bounding box coordinate tuples from the CSV
     timestamps = []
     
     for (start, end) in zip(df['start'], df['end']):
@@ -43,10 +46,11 @@ def extract_timestamps(csv_path, video_duration):
 
     return timestamps
 
+
 def main():
     # check command line arguments
     if len(sys.argv) != 3:
-        print("Usage: python video_cutter.py <input_video> <timestamps_csv>")
+        print("Usage: python video_cutter.py <input_video_path> <timestamps_csv_path>")
         sys.exit(1)
 
     # fetch the command line arguments
@@ -68,11 +72,10 @@ def main():
     timestamps = extract_timestamps(timestamps_csv_path, video.duration)
 
     # create or replace output directory
-    output_dir = "extracted_frames"
-    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     # extract and save frames from subclips based on the timestamps
-    frame_number = 1
+    number = 1
     for (start, end) in timestamps:
         subclip = video.subclipped(start, end)
 
@@ -82,7 +85,7 @@ def main():
         # extract 10 equidistant individual frames per second save them as JPEG images 
         for frame in subclip.iter_frames(fps = 10, dtype = 'uint8'):
             # create the path for the output frame image with zero-padded numbering
-            frame_path = os.path.join(output_dir, f"frame_{frame_number:05d}.jpg")
+            frame_path = os.path.join(OUTPUT_DIR, f"frame_{frame_number:05d}.jpg")
             Image.fromarray(frame).save(frame_path, "JPEG")
             frame_number += 1
 
