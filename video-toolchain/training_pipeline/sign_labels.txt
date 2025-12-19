@@ -1,3 +1,11 @@
 Stop
 Yield
+PriorityRoad
+NoEntry
+NoParking
+NoStanding
+AheadOnly
+Crosswalk
 SpeedLimit30
+SpeedLimit50
+Roundabout
