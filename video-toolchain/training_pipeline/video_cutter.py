@@ -5,6 +5,8 @@ import moviepy as mp
 from PIL import Image
 
 OUTPUT_DIR = "extracted_frames"
+RESIZE_HEIGHT = 720
+TARGET_FPS = 10
 
 def timestamp_to_seconds(timestamp):
     hours = int(timestamp[0:2])
@@ -75,15 +77,14 @@ def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     # extract and save frames from subclips based on the timestamps
-    number = 1
     for (start, end) in timestamps:
         subclip = video.subclipped(start, end)
 
         # resize to 720p for smaller file size and smaller ML model input size
-        subclip = subclip.resized(height=720)
+        subclip = subclip.resized(height=RESIZE_HEIGHT)
 
         # extract 10 equidistant individual frames per second save them as JPEG images 
-        for frame in subclip.iter_frames(fps = 10, dtype = 'uint8'):
+        for frame in subclip.iter_frames(fps = TARGET_FPS, dtype = 'uint8'):
             # create the path for the output frame image with zero-padded numbering
             frame_path = os.path.join(OUTPUT_DIR, f"frame_{frame_number:05d}.jpg")
             Image.fromarray(frame).save(frame_path, "JPEG")
