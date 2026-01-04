@@ -41,3 +41,4 @@ PassOnLeft
 PassOnRight
 Roundabout
 GoStraightOrLeft
+Parking
