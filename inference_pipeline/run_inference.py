@@ -2,7 +2,7 @@ import torch
 import os
 import torchvision.transforms as transforms
 from model import YoloV1
-from torchvision.ops import nms
+from utils import nonMaxSuppression
 from PIL import Image
 from PIL import ImageDraw
 
