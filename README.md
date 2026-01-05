@@ -1,9 +1,5 @@
 About our project <br>
-This project focuses on the end-to-end development of a custom object detection system designed for traffic scenarios. At the core of our solution is the YOLOv1 (You Only Look Once) architecture, which we implemented and built entirely from scratch without relying on pre-trained "black box" libraries.
-
-The model was trained on a custom dataset created by processing raw traffic video footage. We sliced the video into individual frames to build a dataset that challenges the model to recognize vehicles and traffic elements in real-time environments.
-
-To make the technology accessible, we integrated the training and inference scripts into a fully functional application. This wrapper allows users to easily interact with the model and visualize the detection results on new data.
+This project focuses on the end-to-end development of a custom object detection system designed for traffic scenarios. At the core of our solution is the YOLOv1 (You Only Look Once) architecture, which we implemented and built entirely from scratch without relying on pre-trained "black box" libraries. The model was trained on a custom dataset created by processing raw traffic video footage. We sliced the video into individual frames to build a dataset that challenges the model to recognize vehicles and traffic elements in real-time environments. To make the technology accessible, we integrated the training and inference scripts into a fully functional application. This wrapper allows users to easily interact with the model and visualize the detection results on new data.
 
 GitHub Link <br>
 https://github.com/andreibadulescu/traffic-sign-recognition
