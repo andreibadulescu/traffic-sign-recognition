@@ -131,3 +131,56 @@ Implementing the full end-to-end pipeline posed several challenges. A major diff
 
 </body>
 </html>
+
+---
+
+# About the Data and Inference Pipelines
+
+## Dataset Preparation Pipeline
+
+### `video_cutter.py`
+
+This script is responsible for segmenting long dashcam recordings into shorter video clips suitable for dataset creation and annotation. The primary motivation for this step is to improve manageability and efficiency when working with raw video data, as well as to isolate relevant temporal segments containing traffic signs.
+
+The input videos were collected from personal dashcam recordings, providing realistic driving scenarios for training and evaluation.
+
+### `dataset_preparator.py`
+
+The dataset preparation script manages the transformation of raw video data into a structured dataset suitable for annotation and training. It enforces consistent directory layouts and naming conventions, which are critical for downstream compatibility with annotation tools, training scripts, and inference pipelines.
+
+This script ensures that extracted frames are organized deterministically, reducing the likelihood of errors caused by mismatched filenames or directory structures.
+
+## Manual Annotation with Label Studio
+
+To generate ground truth annotations, the extracted frames were manually labeled using **Label Studio**. Frames produced by the dataset preparation pipeline were imported into the tool and annotated with bounding boxes corresponding to traffic signs.
+
+Annotations were exported in **YOLO format**, ensuring direct compatibility with the training pipeline. Particular attention was given to label configuration, coordinate normalization, and class indexing, as these aspects must strictly align with the model’s expected input format.
+
+The resulting annotated dataset was used to train and validate the YOLO model developed in the machine learning subsystem.
+
+## Inference Pipeline
+
+### `frame_extractor.py`
+
+This script serves as the entry point for the inference pipeline. It processes directories containing a mixture of videos and standalone images, extracting frames at a fixed target frame rate and resizing them to a standardized resolution.
+
+Frames originating from videos are grouped using deterministic filename prefixes, preserving temporal ordering and enabling later reconstruction into full video sequences. This approach allows batch processing while maintaining clear separation between different input sources.
+
+### `run_inference.py`
+
+The inference script interfaces directly with the YOLO model. It loads preprocessed frames, converts them into the tensor format required by the network, and executes forward passes to obtain detection outputs.
+
+These outputs include bounding box coordinates, class predictions, and confidence scores, which are then serialized for use in downstream post-processing steps. The script acts as a strict intermediary between raw image data and structured detection results.
+
+### `reconstruct_video.py`
+
+The final stage of the pipeline reconstructs annotated videos from inference results. To avoid excessive memory usage, frames are loaded and processed on demand using a generator-style approach rather than being stored entirely in memory.
+
+Each frame is optionally upscaled to Full HD resolution before being encoded into an H.264 video file. Standalone images that are not part of a video sequence are copied directly to the output directory, allowing the pipeline to support both image-based and video-based inference seamlessly.
+
+## Pipeline Integration and Design Considerations
+
+A central challenge during development was ensuring consistent interoperability between all pipeline stages. This required strict standardization of file formats, naming conventions, and directory structures so that outputs from one stage could be reliably consumed by the next.
+
+Additionally, close coordination with the machine learning subsystem was necessary to correctly format model inputs and interpret outputs. The final result is a modular yet cohesive pipeline that supports dataset creation, manual annotation, automated inference, and video reconstruction in a reproducible and scalable manner.
+
