@@ -1,3 +1,4 @@
+import sys
 import torch
 import os
 import torchvision.transforms as transforms
@@ -8,8 +9,8 @@ from PIL import ImageDraw
 
 TRAINED_WEIGHTS_PATH = "./weights/yolov1_epoch100.pth"
 SIGN_LABELS_PATH = "../sign_labels.txt"
-EXTRACTED_FRAMES_PATH = "extracted_frames"
-DRAWN_IMAGES_PATH = "inference_results"
+EXTRACTED_FRAMES_PATH = "./extracted_frames"
+DRAWN_IMAGES_PATH = "./inference_results"
 
 MODEL_INPUT_SIZE = (448, 448)
 CONFIDENCE_THRESHOLD = 0.2
@@ -23,7 +24,7 @@ def create_sign_mapping(labels_path):
 			label_mapping[id] = label
 	return label_mapping
 
-def main():
+def run_inference():
 	# load model and set it to evaluation mode
 	model = YoloV1()
 	model.load_state_dict(torch.load(TRAINED_WEIGHTS_PATH, weights_only=True))
@@ -65,6 +66,9 @@ def main():
 
 			class_name = label_mapping[class_id]
 
+			# print for frontend consumption
+			print(f"{frame} {class_name}")
+
 			# convert YOLO to pixel coordinates for drawing bounding boxes
 			x_center = x * image.width
 			y_center = y * image.height
@@ -85,6 +89,17 @@ def main():
 		os.makedirs(DRAWN_IMAGES_PATH, exist_ok=True)
 		output_img_path = os.path.join(DRAWN_IMAGES_PATH, frame)
 		image.save(output_img_path)
+
+def main():
+	if not os.path.isdir(EXTRACTED_FRAMES_PATH):
+		print("Extracted frames path does not exist", file=sys.stderr)
+		sys.exit(1)
+
+	if not os.path.isfile(TRAINED_WEIGHTS_PATH):
+		print("Trained weights file does not exist", file=sys.stderr)
+		sys.exit(1)
+
+	run_inference()
 
 
 if __name__ == "__main__":

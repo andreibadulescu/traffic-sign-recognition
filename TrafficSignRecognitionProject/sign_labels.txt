@@ -28,7 +28,7 @@ CitySpeedLimit
 OutsideCitySpeedLimit
 HighwaySpeedLimit
 PedestrianCrossing
-Bicycles
+BicyclePath
 Trucks
 OneWayTraffic
 PassOnEitherSide

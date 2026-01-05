@@ -51,7 +51,7 @@ def create_annotation_files(csv_path):
 
         # check if path is a valid file
         if not os.path.isfile(frame_path):
-            print(f"Frame with id {frame_id} does not exist at path {frame_path}")
+            print(f"Frame with id {frame_id} does not exist at path {frame_path}", file=sys.stderr)
             continue
 
         # save all annotations for a frame in a list of strings
@@ -66,7 +66,7 @@ def create_annotation_files(csv_path):
 
             # check if bounding box on the current row is valid
             if not validate_bounding_box(x_min, y_min, x_max, y_max, FRAME_WIDTH, FRAME_HEIGHT):
-                print(f"Invalid bounding box: {x_min}, {y_min}, {x_max}, {y_max} in frame {frame_id}")
+                print(f"Invalid bounding box: {x_min}, {y_min}, {x_max}, {y_max} in frame {frame_id}", file=sys.stderr)
                 continue
 
             # calculate the center coordinates and bonding box width, and then
@@ -88,20 +88,20 @@ def create_annotation_files(csv_path):
                 for l in annotation_lines:
                     f.write(l + "\n")
         else:
-            print(f"No valid bounding boxes for frame {frame_id}, no annotation file is created for it.")
+            print(f"No valid bounding boxes for frame {frame_id}, no annotation file is created for it.", file=sys.stderr)
 
 
 def main():
     # check command line arguments
     if len(sys.argv) != 2:
-        print("Usage: dataset_preparator.py <annotations_csv_path>")
+        print("Usage: dataset_preparator.py <annotations_csv_path>", file=sys.stderr)
         sys.exit(1)
 
     # fetch the command line argument
     annotations_csv_path = sys.argv[1]
 
     if not os.path.isfile(annotations_csv_path):
-        print("Annotations CSV file does not exist")
+        print("Annotations CSV file does not exist", file=sys.stderr)
         sys.exit(1)
 
     # create or replace output directory

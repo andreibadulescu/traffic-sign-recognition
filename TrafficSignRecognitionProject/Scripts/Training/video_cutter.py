@@ -6,6 +6,7 @@ from PIL import Image
 
 OUTPUT_DIR = "extracted_frames"
 RESIZE_HEIGHT = 720
+RESIZE_RESOLUTION = (1280, 720) # 720p resolution
 TARGET_FPS = 10
 
 def timestamp_to_seconds(timestamp):
@@ -44,7 +45,7 @@ def extract_timestamps(csv_path, video_duration):
         if timestamp_isvalid(start_sec, end_sec, video_duration):
             timestamps.append((start_sec, end_sec))
         else:
-            print(f"Invalid timestamp: {start} - {end}")
+            print(f"Invalid timestamp: {start} - {end}", file=sys.stderr)
 
     return timestamps
 
@@ -52,7 +53,7 @@ def extract_timestamps(csv_path, video_duration):
 def main():
     # check command line arguments
     if len(sys.argv) != 3:
-        print("Usage: python video_cutter.py <input_video_path> <timestamps_csv_path>")
+        print("Usage: python video_cutter.py <input_video_path> <timestamps_csv_path>", file=sys.stderr)
         sys.exit(1)
 
     # fetch the command line arguments
@@ -61,11 +62,11 @@ def main():
 
     # check if input files exist
     if not os.path.isfile(input_video_path):
-        print("Input video file does not exist")
+        print("Input video file does not exist", file=sys.stderr)
         sys.exit(1)
 
     if not os.path.isfile(timestamps_csv_path):
-        print("Timestamps CSV file does not exist")
+        print("Timestamps CSV file does not exist", file=sys.stderr)
         sys.exit(1)
 
     video = mp.VideoFileClip(input_video_path)
@@ -75,6 +76,8 @@ def main():
 
     # create or replace output directory
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    frame_number = 0
 
     # extract and save frames from subclips based on the timestamps
     for (start, end) in timestamps:
