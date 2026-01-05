@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "TrafficSignRecognitionProject (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "TrafficSignRecognitionProject (Unpackaged)": {
+        "commandName": "Project"
+      }
+    }
+}
