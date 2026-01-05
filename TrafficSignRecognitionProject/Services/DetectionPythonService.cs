@@ -9,8 +9,8 @@ namespace TrafficSignRecognitionProject.Services;
 
 public class DetectionPythonService
 {
-    // TODO: CHANGE PATH TO DETECTION PIPELINE
-    private readonly string _execPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "path_here.py");
+    private readonly string _execPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "Testing", "run_inference.py");
+    private readonly string _extractorPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "Testing", "frame_extractor.py");
 
     public async Task<String> RunAsync(string folderPath)
     {
@@ -23,6 +23,32 @@ public class DetectionPythonService
             UseShellExecute = false,
             CreateNoWindow = true
         };
+
+        var frameExtractorConfig = new ProcessStartInfo
+        {
+            FileName = "python",
+            Arguments = $"\"{_extractorPath}\" \"{folderPath}\"",
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        await Task.Run(async () =>
+        {
+            using var process = new Process { StartInfo = frameExtractorConfig };
+            process.Start();
+
+            var errorAsync = process.StandardError.ReadToEndAsync();
+
+            await process.WaitForExitAsync();
+
+            var error = await errorAsync;
+
+            if (process.ExitCode != 0)
+            {
+                throw new Exception($"Frame extractor failed: {error}");
+            }
+        });
 
         return await Task.Run(async () =>
         {

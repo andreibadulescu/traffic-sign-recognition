@@ -9,8 +9,8 @@ namespace TrafficSignRecognitionProject.Services;
 
 public class TrainPythonService
 {
-    // TODO: CHANGE PATH TO TRAINING PIPELINE
-    private readonly string _execPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "path_here.py");
+    private readonly string _execPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "dataset_preparator.py");
+    private readonly string _cutterPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "video_cutter.py");
 
     public async Task<String> RunAsync(string folderPath)
     {
@@ -23,6 +23,31 @@ public class TrainPythonService
             UseShellExecute = false,
             CreateNoWindow = true
         };
+
+        var cutterConfig = new ProcessStartInfo
+        {
+            FileName = "python",
+            Arguments = $"\"{_cutterPath}\" \"{folderPath}\"",
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        await Task.Run(async () =>
+        {
+            using var process = new Process { StartInfo = cutterConfig };
+            process.Start();
+
+            var errorAsync = process.StandardError.ReadToEndAsync();
+
+            await process.WaitForExitAsync();
+
+            var error = await errorAsync;
+
+            if (process.ExitCode != 0)
+            {
+                throw new Exception($"Cutter failed: {error}");
+            }
+        });
 
         return await Task.Run(async () =>
         {
