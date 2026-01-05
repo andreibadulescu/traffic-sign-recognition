@@ -12,6 +12,8 @@
         <StackPanel Spacing="30" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock x:Uid="Train_InitialMessage" Style="{ThemeResource BodyTextStyle}" HorizontalTextAlignment="Center" />
             <Button x:Uid="Train_SelectButton" Name="TrainSelectButton" Style="{StaticResource AccentButtonStyle}" Command="{x:Bind ViewModel.PickFolderCommand}" CommandParameter="{x:Bind TrainSelectButton}" HorizontalAlignment="Center" />
+            <TextBlock x:Name="StatusWindow" Text="{x:Bind ViewModel.ExitMessage, Mode=OneWay}" Visibility="{x:Bind ViewModel.ShowExitMessage, Mode=OneWay}" HorizontalTextAlignment="Center" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+            <ProgressRing IsActive="{x:Bind ViewModel.IsProcessing}" Visibility="{x:Bind ViewModel.ShowProcessingIcon}" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Page>

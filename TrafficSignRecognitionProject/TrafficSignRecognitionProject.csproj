@@ -30,11 +30,8 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.251106002" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="3.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="WinUIEx" Version="2.9.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TrafficSignRecognitionProject.Core\TrafficSignRecognitionProject.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
