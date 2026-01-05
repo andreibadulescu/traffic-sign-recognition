@@ -6,7 +6,7 @@ This project focuses on the end-to-end development of a custom object detection 
 ## GitHub Link <br>
 [Github Repository Link](https://github.com/andreibadulescu/traffic-sign-recognition)
 
-Used languages / technologies <br>
+## Used languages / technologies <br>
 The Windows application that controls the processing pipelines and the ML model is written in C# and XAML (where C# is used for program logic flow and XAML describes what and how elements should be shown on screen). It was built using methods and structures defined in the Windows and Windows APP SDKs, the latter including also the UI elements that form WinUI3. In order to enforce the ModelView-View Model design pattern, the MVVM Toolkit library maintained by the .NET community was used, which offers special attributes for various properties and classes that should be observable in order to dynamically update the graphical interface when any change occurs.
 
 ## How to run and use the application <br>
