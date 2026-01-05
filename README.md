@@ -12,7 +12,7 @@ The Windows application that controls the processing pipelines and the ML model 
 The implementation of this detection subsystem relies on Python as the primary language, utilizing the PyTorch framework for building and training the deep neural network. Essential libraries include NumPy for high-performance matrix operations and linear algebra, particularly for IoU calculations, and OpenCV for image pre-processing and visualization. Additionally, Torchvision is used for data augmentation, while Matplotlib handles the plotting of loss metrics to monitor training convergence.
 
 ## How to run and use the application <br>
-TODO
+To install the application, the user must either download the packaged executable from GitHub or install Visual Studio in order to compile the application, as well as install Python and the dependencies of the Python scripts by consulting the requirements.txt file. From that point, the user simply starts the app, either by starting it in Visual Studio or by launching the installed executable and uses the application in accordance with the indications given in-app and the guidelines and suggestions mentioned in this README. The user can also opt to directly interact with the pipelines or the ML model for rapidity and scalability.
 
 ## Team members and individual responsibilities <br>
 Karina Antoniu was tasked with creating the ML model and writing the training / inference logic. Andrei Bădulescu was responsible with writing the Windows application that functions over the ML model and the processing pipelines and offers an easy-to-learn, intuitive interface for users that do not have a technology-oriented background. Ștefan Mărășescu was responsible with obtaining the data necessary to train the ML model and create the processing pipelines that enable an easier interaction with the ML model.
@@ -131,6 +131,36 @@ Implementing the full end-to-end pipeline posed several challenges. A major diff
 
 </body>
 </html>
+
+---
+
+# About the Windows Application
+
+## Sign Catalogue
+
+This section of the app includes all traffic signs that are recognised by the model. Each individual entry has a name and a picture associated with it in order to allow easier identification and cross-matching between detection labels and signs. 
+
+The traffic signs are saved within the application in a service as a static list of Sign items. The application also supports persistent storage, with the help of a JSON loader / saver service.
+
+## Detect Section
+
+In this section, the user shall provide the application a folder which contains footage that the ML model should process in order to identify traffic signs. After pressing the "Browse" button, the user is shown a system dialogue, which asks for a directory of the data entries.
+
+If there are any errors, the execution stops and a specific error message is shown. Otherwise, a list with filenames and identified labels is shown. The user can then opt to start again the detection process with a different folder.
+
+## Train Section
+
+The user can choose to provide a folder with a video and a .csv file with the annotations in order to refine the model / add new signs that can be identified. If there are no errors, a success message will be shown on screen. Otherwise, an error message that states the specific problem with the script or with the input data will be shown.
+
+## Home Section
+
+This section is the default section of the app, it is visible on start-up and its purpose is to explain to the user in a succint format available operations that can be carried out using the app.
+
+## Design Patterns and Resources Catalog
+
+The Windows Application follows all of the Design Guidelines imposed by the ModelView - View Model pattern. Every view has a view model associated with it, which is responsible for data fetching, asynchronous calls towards services and interface updates.
+
+All of the static strings are localized with the help of a string resources catalog, which eases identification of various messages, titles and other text snippets.
 
 ---
 
