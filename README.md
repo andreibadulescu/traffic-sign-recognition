@@ -7,8 +7,8 @@ This project focuses on the end-to-end development of a custom object detection 
 [Github Repository Link](https://github.com/andreibadulescu/traffic-sign-recognition)
 
 ## Used languages / technologies <br>
-The Windows application that controls the processing pipelines and the ML model is written in C# and XAML (where C# is used for program logic flow and XAML describes what and how elements should be shown on screen). <br> It was built using methods and structures defined in the Windows and Windows APP SDKs, the latter including also the UI elements that form WinUI3. <br> In order to enforce the ModelView-View Model design pattern, the MVVM Toolkit library maintained by the .NET community was used, which offers special attributes for various properties and classes that should be observable in order to dynamically update the graphical interface when any change occurs.
-<br>
+The Windows application that controls the processing pipelines and the ML model is written in C# and XAML (where C# is used for program logic flow and XAML describes what and how elements should be shown on screen). It was built using methods and structures defined in the Windows and Windows APP SDKs, the latter including also the UI elements that form WinUI3. In order to enforce the ModelView-View Model design pattern, the MVVM Toolkit library maintained by the .NET community was used, which offers special attributes for various properties and classes that should be observable in order to dynamically update the graphical interface when any change occurs.
+<br> <br>
 The implementation of this detection subsystem relies on Python as the primary language, utilizing the PyTorch framework for building and training the deep neural network. Essential libraries include NumPy for high-performance matrix operations and linear algebra, particularly for IoU calculations, and OpenCV for image pre-processing and visualization. Additionally, Torchvision is used for data augmentation, while Matplotlib handles the plotting of loss metrics to monitor training convergence.
 
 ## How to run and use the application <br>
