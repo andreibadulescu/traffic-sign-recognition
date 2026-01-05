@@ -26,8 +26,9 @@
                         Padding="{StaticResource XSmallLeftTopRightBottomMargin}">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Image
-                                Source="{x:Bind SymbolName}"
-                                AutomationProperties.Name="{x:Bind SymbolName}" />
+                                Source="{x:Bind FullSymbolName}"
+                                AutomationProperties.Name="{x:Bind SymbolName}"
+                                MaxHeight="100" MaxWidth="100"/>
                             <TextBlock
                                 Margin="{StaticResource XXSmallTopMargin}"
                                 HorizontalAlignment="Center"

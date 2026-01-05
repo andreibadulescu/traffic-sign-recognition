@@ -15,6 +15,15 @@
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Assets\Limit100.jpg" />
+    <None Remove="Assets\Limit110.png" />
+    <None Remove="Assets\Limit120.jpg" />
+    <None Remove="Assets\Limit20.jpg" />
+    <None Remove="Assets\Limit30.jpg" />
+    <None Remove="Assets\Limit50.png" />
+    <None Remove="Assets\Limit60.jpg" />
+    <None Remove="Assets\Limit70.png" />
+    <None Remove="Assets\Limit80.jpg" />
     <None Remove="Assets\WindowIcon.ico" />
   </ItemGroup>
 
