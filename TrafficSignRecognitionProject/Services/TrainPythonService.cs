@@ -11,7 +11,8 @@ public class TrainPythonService
 {
     private readonly string _execPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "Training", "dataset_preparator.py");
     private readonly string _cutterPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "Training", "video_cutter.py");
-    private readonly string _trainPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "ML", "aaaa.py");
+    private readonly string _trainPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "ML", "train.py");
+    private readonly string _weightPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "ML", "weights", "yolov1_custom.pth");
 
     public async Task<String> RunAsync(string folderPath, bool isContentAnnotated)
     {
@@ -36,7 +37,7 @@ public class TrainPythonService
         var trainConfig = new ProcessStartInfo
         {
             FileName = "python",
-            Arguments = $"\"{_trainPath}\" \"{folderPath}\"",
+            Arguments = $"\"{_trainPath}\" \"{folderPath}\" \"{_weightPath}\"",
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,

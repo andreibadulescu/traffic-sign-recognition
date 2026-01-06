@@ -15,6 +15,9 @@ public partial class TrainViewModel : ObservableRecipient
     private readonly TrainPythonService _service;
 
     [ObservableProperty]
+    private bool? _contentIsYOLOAnnotated;
+
+    [ObservableProperty]
     private bool _isProcessing;
 
     [ObservableProperty]
@@ -37,6 +40,7 @@ public partial class TrainViewModel : ObservableRecipient
         _service = new TrainPythonService();
         ShowExitMessage = Visibility.Collapsed;
         ShowProcessingIcon = Visibility.Collapsed;
+        ContentIsYOLOAnnotated = false;
     }
 
     [RelayCommand]
@@ -83,11 +87,9 @@ public partial class TrainViewModel : ObservableRecipient
             IsProcessing = true;
             ShowProcessingIcon = Visibility.Visible;
             ShowExitMessage = Visibility.Visible;
-            ExitMessage = "Processing...\nDo not change tabs.";
+            ExitMessage = $"Processing...\nDo not change tabs. {ContentIsYOLOAnnotated}";
 
-
-            // TODO: Modify true to reflect user choice!
-            await _service.RunAsync(folderPath, true);
+            await _service.RunAsync(folderPath, ContentIsYOLOAnnotated.GetValueOrDefault());
 
             ShowExitMessage = Visibility.Collapsed;
             ExitMessage = "Success!\nModel has been trained successfully.";

@@ -177,7 +177,7 @@
     <value>Train</value>
   </data>
   <data name="Train_InitialMessage.Text" xml:space="preserve">
-    <value>Please select a folder that only contains pictures of traffic signs that you would like to use in order to further train the computer to recognise.</value>
+    <value>Please select a folder that contains images and/or videos. Details regarding data compatibility are listed in the documentation. If your data entries are already annotated in YOLO format, please check the box below.</value>
   </data>
   <data name="Train_SelectButton.Content" xml:space="preserve">
     <value>Browse</value>
@@ -192,12 +192,15 @@
     <value>Browse</value>
   </data>
   <data name="Detect_InitialMessage.Text" xml:space="preserve">
-    <value>Please select a folder that only contains pictures of traffic signs. The model will infer the sign present in each picture. After the analysis ends, the results are placed into a list.</value>
+    <value>Please select a folder that contains pictures and/or videos of traffic signs. The model will infer the sign present in each picture/frame. After the analysis ends, the results are placed into a list.</value>
   </data>
   <data name="Detect_SelectAnotherFolder.Content" xml:space="preserve">
     <value>Scan new folder</value>
   </data>
   <data name="Detect_ResultsHeader.Text" xml:space="preserve">
     <value>Detection Results</value>
+  </data>
+  <data name="Train_ContentCheck.Content" xml:space="preserve">
+    <value>Data is annotated following YOLO convention</value>
   </data>
 </root>
