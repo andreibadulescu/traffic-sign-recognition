@@ -2,15 +2,23 @@ import sys
 import torch
 import os
 import torchvision.transforms as transforms
+
+# add ../ML to program Path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+ml_dir = os.path.join(parent_dir, 'ML')
+weights_dir = os.path.join(ml_dir, 'weights')
+sys.path.append(ml_dir)
+
 from model import YoloV1
 from utils import nonMaxSuppression
 from PIL import Image
 from PIL import ImageDraw
 
-TRAINED_WEIGHTS_PATH = "./weights/yolov1_epoch100.pth"
-SIGN_LABELS_PATH = "../sign_labels.txt"
-EXTRACTED_FRAMES_PATH = "./extracted_frames"
-DRAWN_IMAGES_PATH = "./inference_results"
+TRAINED_WEIGHTS_PATH = os.path.join(weights_dir, 'yolov1_epoch100.pth')
+SIGN_LABELS_PATH = os.path.join(parent_dir, 'sign_labels.txt')
+EXTRACTED_FRAMES_PATH = os.path.join(current_dir, 'extracted_frames')
+DRAWN_IMAGES_PATH = os.path.join(current_dir, 'inference_results')
 
 MODEL_INPUT_SIZE = (448, 448)
 CONFIDENCE_THRESHOLD = 0.2
@@ -96,6 +104,7 @@ def main():
 		sys.exit(1)
 
 	if not os.path.isfile(TRAINED_WEIGHTS_PATH):
+		print(TRAINED_WEIGHTS_PATH, file=sys.stderr)
 		print("Trained weights file does not exist", file=sys.stderr)
 		sys.exit(1)
 

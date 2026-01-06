@@ -86,7 +86,7 @@ public class CatalogueDataService : IDefaultDataService
                 SignID = 12,
                 Name = "Arrow Green Semaphore",
                 SymbolName="SemaphoreGreenArrow"
-            },
+            }
         };
     }
 

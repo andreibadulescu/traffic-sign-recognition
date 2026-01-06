@@ -9,8 +9,8 @@ namespace TrafficSignRecognitionProject.Services;
 
 public class DetectionPythonService
 {
-    private readonly string _execPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "Testing", "run_inference.py");
-    private readonly string _extractorPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "Testing", "frame_extractor.py");
+    private readonly string _execPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "Testing", "run_inference.py");
+    private readonly string _extractorPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "Testing", "frame_extractor.py");
 
     public async Task<String> RunAsync(string folderPath)
     {

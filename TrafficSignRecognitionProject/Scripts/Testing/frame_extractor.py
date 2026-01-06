@@ -3,7 +3,8 @@ import sys
 import moviepy as mp
 from PIL import Image
 
-EXTRACTED_FRAMES_PATH = "./extracted_frames"
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+EXTRACTED_FRAMES_PATH = os.path.join(CURRENT_DIR, 'extracted_frames')
 RESIZE_HEIGHT = 720
 RESIZE_RESOLUTION = (1280, 720) # 720p resolution
 TARGET_FPS = 10

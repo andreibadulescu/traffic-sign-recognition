@@ -9,8 +9,8 @@ namespace TrafficSignRecognitionProject.Services;
 
 public class TrainPythonService
 {
-    private readonly string _execPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "dataset_preparator.py");
-    private readonly string _cutterPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "video_cutter.py");
+    private readonly string _execPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "dataset_preparator.py");
+    private readonly string _cutterPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "video_cutter.py");
 
     public async Task<String> RunAsync(string folderPath)
     {

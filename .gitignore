@@ -361,3 +361,23 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch10.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch100.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch15.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch20.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch25.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch30.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch35.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch40.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch45.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch5.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch50.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch55.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch60.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch65.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch70.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch75.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch80.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch85.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch90.pth
+/TrafficSignRecognitionProject/Scripts/ML/weights/yolov1_epoch95.pth
