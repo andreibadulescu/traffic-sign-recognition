@@ -11,9 +11,8 @@
     <Grid>
         <StackPanel Spacing="30" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{x:Bind ViewModel.ShowDialogue, Mode=OneWay}" >
             <TextBlock x:Uid="Detect_InitialMessage" Style="{ThemeResource BodyTextStyle}" HorizontalTextAlignment="Center" />
-            <Button x:Uid="Detect_SelectButton" Name="DetectSelectButton"  Command="{x:Bind ViewModel.PickFolderCommand}" CommandParameter="{x:Bind DetectSelectButton}" HorizontalAlignment="Center" />
+            <Button x:Uid="Detect_SelectButton" Name="DetectSelectButton" Style="{StaticResource AccentButtonStyle}" Command="{x:Bind ViewModel.PickFolderCommand}" CommandParameter="{x:Bind DetectSelectButton}" HorizontalAlignment="Center" />
             <TextBlock x:Name="StatusWindow" Text="{x:Bind ViewModel.ExitMessage, Mode=OneWay}" Visibility="{x:Bind ViewModel.ShowExitMessage, Mode=OneWay}" HorizontalTextAlignment="Center" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-            <ProgressRing IsActive="{x:Bind ViewModel.IsProcessing}" Visibility="{x:Bind ViewModel.ShowProcessingIcon}" HorizontalAlignment="Center"/>
         </StackPanel>
 
         <Grid Visibility="{x:Bind ViewModel.ShowResults, Mode=OneWay}" Padding="20">
@@ -41,6 +40,8 @@
                             <Border Grid.Column="1" Background="{ThemeResource SystemControlBackgroundBaseLowBrush}" CornerRadius="4" Padding="8,4">
                                 <TextBlock Text="{x:Bind SymbolName}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Left" />
                             </Border>
+
+                            <TextBlock Text="{x:Bind ModifiedImage}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Right" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

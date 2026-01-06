@@ -130,12 +130,13 @@ public partial class DetectSignsViewModel : ObservableRecipient
         {
             var tokens = line.Split(' ');
 
-            if (tokens.Length == 2)
+            if (tokens.Length == 3)
             {
                 detectedSigns.Add(new SignDetectionResult
                 {
                     Filename = tokens[0],
-                    SymbolName = tokens[1]
+                    SymbolName = tokens[1],
+                    ModifiedImage = "Annotated image at: " + tokens[2]
                 });
             }
             else

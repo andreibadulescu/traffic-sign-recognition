@@ -12,5 +12,10 @@ public class SignDetectionResult
         get; set;
     }
 
-    public override string ToString() => $"{Filename} {SymbolName}";
+    public string ModifiedImage
+    {
+        get; set;
+    }
+
+    public override string ToString() => $"{Filename} {SymbolName} {ModifiedImage}";
 }

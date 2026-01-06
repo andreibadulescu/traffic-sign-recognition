@@ -70,6 +70,8 @@ def run_inference():
 		bboxes = bboxes[0].reshape(-1, 6).tolist()
 		boxes = nonMaxSuppression(bboxes)
 
+		output_img_path = os.path.join(DRAWN_IMAGES_PATH, frame)
+
 		for box in boxes:
 			# x, y = center of box, all values are normalized
 			x, y, width, height, confidence, class_id = box
@@ -78,9 +80,6 @@ def run_inference():
 				continue # skip poor predictions
 
 			class_name = label_mapping[class_id]
-
-			# print for frontend consumption
-			print(f"{frame} {class_name}")
 
 			# convert YOLO to pixel coordinates for drawing bounding boxes
 			x_center = x * image.width
@@ -97,10 +96,11 @@ def run_inference():
 			# draw rectangle based on bounding box coordinates and write class name
 			drawable.rectangle([x_min, y_min, x_max, y_max], outline = "green", width = 3)
 			drawable.text((x_min, y_min - 10), class_name, fill = "green")
+			# print for frontend consumption
+			print(f"{frame} {class_name} {output_img_path}")
 
 		# save the image with drawn bounding boxes
 		os.makedirs(DRAWN_IMAGES_PATH, exist_ok=True)
-		output_img_path = os.path.join(DRAWN_IMAGES_PATH, frame)
 		image.save(output_img_path)
 
 def main():
