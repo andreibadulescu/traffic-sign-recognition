@@ -80,7 +80,7 @@ def create_annotation_files(csv_path):
             # add annotation line string for bounding box of the current frame
             # contains the sign label id and normalized bounding box coordintes
             annotation_lines.append(
-                f"{label_mapping[class_label]} {center_x} {center_y} {width} {height}")
+                f"{label_mapping[class_label]} {center_x:.6f} {center_y:.6f} {width:.6f} {height:.6f}")
 
         if len(annotation_lines) > 0:
             annotation_file = os.path.join(OUTPUT_DIR, f"frame_{frame_id:05d}.txt")
@@ -95,22 +95,27 @@ def create_annotation_files(csv_path):
 def main():
     # check command line arguments
     if len(sys.argv) != 2:
-        print("Usage: dataset_preparator.py <annotations_csv_path>", file=sys.stderr)
+        print("Usage: dataset_preparator.py <directory_path>", file=sys.stderr)
         sys.exit(1)
 
-    # fetch the command line argument
-    annotations_csv_path = sys.argv[1]
+    # fetch directory path containing the annotations CSV file
+    csv_dir_path = sys.argv[1]
 
-    if not os.path.isfile(annotations_csv_path):
-        print("Annotations CSV file does not exist", file=sys.stderr)
+    if not os.path.isdir(csv_dir_path):
+        print("Directory does not exist", file=sys.stderr)
         sys.exit(1)
 
     # create or replace output directory
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
-    # create annotation files and save them in directory
-    create_annotation_files(annotations_csv_path)
+    csv_path = os.path.join(csv_dir_path, "annotations.csv")
 
+    if not os.path.isfile(csv_path):
+        print("The directory must contain a file named annotations.csv", file=sys.stderr)
+        sys.exit(1)
+
+    # create YOLO annotation files based on the csv and save them in directory
+    create_annotation_files(csv_path)
 
 if __name__ == "__main__":
     main()
