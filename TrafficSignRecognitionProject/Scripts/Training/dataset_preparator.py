@@ -7,10 +7,11 @@ import sys
 FRAME_WIDTH = 1280
 FRAME_HEIGHT = 720
 
-EXTRACTED_FRAMES_PATH = "./extracted_frames/"
-SIGN_LABELS_PATH = "../sign_labels.txt"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-OUTPUT_DIR = "annotation_files"
+EXTRACTED_FRAMES_PATH = os.path.join(BASE_DIR, "extracted_frames")
+SIGN_LABELS_PATH = os.path.join(BASE_DIR, "..", "sign_labels.txt")
+OUTPUT_DIR = os.path.join(BASE_DIR, "annotation_files")
 
 def validate_bounding_box(x_min, y_min, x_max, y_max, image_width, image_height):
     # negative min coordinates not allowed
@@ -47,7 +48,7 @@ def create_annotation_files(csv_path):
     frame_groups = df.groupby('frame_id')
 
     for frame_id, groups in frame_groups:
-        frame_path = EXTRACTED_FRAMES_PATH + f"frame_{frame_id:05d}.png"
+        frame_path = os.path.join( EXTRACTED_FRAMES_PATH, f"frame_{frame_id:05d}.jpg")
 
         # check if path is a valid file
         if not os.path.isfile(frame_path):
