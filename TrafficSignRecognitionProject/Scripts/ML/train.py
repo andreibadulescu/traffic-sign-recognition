@@ -72,13 +72,12 @@ def main():
 
 	parser = argparse.ArgumentParser()
 
-	parser.add_argument('--img_dir', type=str, default=config.TRAIN_IMG_DIR, help='Image path')
-	parser.add_argument('--label_dir', type=str, default=config.TRAIN_LABEL_DIR, help='Labels path')
+	parser.add_argument('--data_dir', type=str, required=True, help='Data directory path')
 
 	args = parser.parse_args()
 
-	current_img_dir = args.img_dir
-	current_label_dir = args.label_dir
+	current_img_dir = args.data_dir
+	current_label_dir = args.data_dir
 
 	base_weights = "weights/yolov1_epoch100.pth"
 	retrained_weights_path = "weights/yolov1_custom.pth"
