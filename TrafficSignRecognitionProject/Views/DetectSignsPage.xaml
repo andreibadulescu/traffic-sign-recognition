@@ -40,8 +40,6 @@
                             <Border Grid.Column="1" Background="{ThemeResource SystemControlBackgroundBaseLowBrush}" CornerRadius="4" Padding="8,4">
                                 <TextBlock Text="{x:Bind SymbolName}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Left" />
                             </Border>
-
-                            <TextBlock Text="{x:Bind ModifiedImage}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Right" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
