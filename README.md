@@ -11,11 +11,11 @@ The Windows application that controls the processing pipelines and the ML model 
 <br> <br>
 The implementation of this detection subsystem relies on Python as the primary language, utilizing the PyTorch framework for building and training the deep neural network. Essential libraries include NumPy for high-performance matrix operations and linear algebra, particularly for IoU calculations, and OpenCV for image pre-processing and visualization. Additionally, Torchvision is used for data augmentation, while Matplotlib handles the plotting of loss metrics to monitor training convergence.
 
-# How to run the application <br>
+## How to run the application <br>
 
 To install the application, the user must either download the packaged executable from GitHub or install Visual Studio in order to compile the application, as well as install Python and the dependencies of the Python scripts by consulting the requirements.txt file. From that point, the user simply starts the app, either by starting it in Visual Studio or by launching the installed executable and uses the application in accordance with the indications given in-app and the guidelines and suggestions mentioned in this README. The user can also opt to directly interact with the pipelines or the ML model for rapidity and scalability.
 
-# How to use the application <br>
+## How to use the application <br>
 
 This application supports **two main workflows**:
 
@@ -26,11 +26,11 @@ Both workflows rely on **strict file naming conventions and directory structures
 
 ---
 
-## 1. Further Training the ML Model
+### 1. Further Training the ML Model
 
 This workflow allows you to extend or retrain the traffic sign detection model using your own data.
 
-### 1.1 Input Data Preparation
+#### 1.1 Input Data Preparation
 
 You must provide a **directory path** containing any combination of:
 
@@ -46,7 +46,7 @@ You must provide a **directory path** containing any combination of:
 * `.jpeg`
 * `.png`
 
-### 1.2 Video–CSV Naming Convention (Mandatory)
+#### 1.2 Video–CSV Naming Convention (Mandatory)
 
 For **each video file**, the same directory **must also contain a CSV file with the same base name**.
 
@@ -85,7 +85,7 @@ start,end
 
 Each row defines a time range in the video where traffic signs appear. Frames extracted from these ranges will be used for training.
 
-### 1.3 Annotation Options
+#### 1.3 Annotation Options
 
 After frames are extracted, you must choose **one of the following annotation paths**.
 
@@ -124,11 +124,11 @@ If you **do not have YOLO `.txt` files**, but instead have bounding boxes stored
 
 ---
 
-## 2. Detecting Traffic Signs
+### 2. Detecting Traffic Signs
 
 This workflow runs the trained ML model on new data and produces visual outputs.
 
-### 2.1 Input Data
+#### 2.1 Input Data
 
 You must choose a **directory path** containing videos and/or images.
 
@@ -171,7 +171,7 @@ The application will generate:
 * Original filenames are preserved
 * These images are **not included in any video**, since they weren't originally extracted from a video
 
-### 2.4 Final Output Summary
+#### 2.4 Final Output Summary
 
 | Input Type      | Output                                           |
 | --------------- | ------------------------------------------------ |
