@@ -11,8 +11,175 @@ The Windows application that controls the processing pipelines and the ML model 
 <br> <br>
 The implementation of this detection subsystem relies on Python as the primary language, utilizing the PyTorch framework for building and training the deep neural network. Essential libraries include NumPy for high-performance matrix operations and linear algebra, particularly for IoU calculations, and OpenCV for image pre-processing and visualization. Additionally, Torchvision is used for data augmentation, while Matplotlib handles the plotting of loss metrics to monitor training convergence.
 
-## How to run and use the application <br>
+# How to run the application <br>
+
 To install the application, the user must either download the packaged executable from GitHub or install Visual Studio in order to compile the application, as well as install Python and the dependencies of the Python scripts by consulting the requirements.txt file. From that point, the user simply starts the app, either by starting it in Visual Studio or by launching the installed executable and uses the application in accordance with the indications given in-app and the guidelines and suggestions mentioned in this README. The user can also opt to directly interact with the pipelines or the ML model for rapidity and scalability.
+
+# How to use the application <br>
+
+This application supports **two main workflows**:
+
+1. **Further training the ML model**
+2. **Detecting traffic signs**
+
+Both workflows rely on **strict file naming conventions and directory structures**. These must be respected for the application to function correctly.
+
+---
+
+## 1. Further Training the ML Model
+
+This workflow allows you to extend or retrain the traffic sign detection model using your own data.
+
+### 1.1 Input Data Preparation
+
+You must provide a **directory path** containing any combination of:
+
+#### Supported video formats
+
+* `.mp4`
+* `.avi`
+* `.mov`
+
+#### Supported image formats
+
+* `.jpg`
+* `.jpeg`
+* `.png`
+
+### 1.2 Video–CSV Naming Convention (Mandatory)
+
+For **each video file**, the same directory **must also contain a CSV file with the same base name**.
+
+#### Example
+
+```
+video1.mp4
+video1.csv
+```
+
+or
+
+```
+highway_scene.avi
+highway_scene.csv
+```
+
+#### CSV timestamp format
+
+Each associated CSV file **must contain timestamps defining subclips** from which frames will be extracted.
+
+**Format:**
+
+```
+start,end
+HH:MM:SS,HH:MM:SS
+```
+
+**Example:**
+
+```
+start,end
+00:01:10,00:01:25
+00:02:40,00:03:00
+```
+
+Each row defines a time range in the video where traffic signs appear. Frames extracted from these ranges will be used for training.
+
+### 1.3 Annotation Options
+
+After frames are extracted, you must choose **one of the following annotation paths**.
+
+
+#### Option A: You already have YOLO annotation files
+
+If you already have YOLO-format annotations:
+
+* Each image frame must have a corresponding `.txt` file
+* The `.txt` file name **must exactly match** the image name
+* Annotation format must follow YOLO convention:
+
+```
+<class_id> <center_x> <center_y> <width> <height>
+```
+
+The model will then be further trained with the provided dataset.
+
+#### Option B: You have a single CSV and want to convert it to YOLO
+
+If you **do not have YOLO `.txt` files**, but instead have bounding boxes stored in a CSV:
+
+1. Choose a directory path containing a file named **exactly**:
+
+   ```
+   annotations.csv
+   ```
+
+2. The CSV **must use the following column format**:
+
+   ```
+   frame_id, x_min, y_min, x_max, y_max, class_label
+   ```
+
+   The app will then convert these csv annotations to YOLO format and model will then be further trained with the provided dataset.
+
+---
+
+## 2. Detecting Traffic Signs
+
+This workflow runs the trained ML model on new data and produces visual outputs.
+
+### 2.1 Input Data
+
+You must choose a **directory path** containing videos and/or images.
+
+#### Supported formats
+
+**Videos**
+
+* `.mp4`
+* `.avi`
+* `.mov`
+
+**Images**
+
+* `.jpg`
+* `.jpeg`
+* `.png`
+
+All supported files found in the directory will be processed automatically.
+
+### 2.2 Output Directory Selection
+
+You must choose a **separate output directory path** where final results will be saved.
+
+The application will generate:
+
+#### Reconstructed videos
+
+* Frames originating from videos are recombined into videos
+* Output naming format:
+
+  ```
+  video_<id>.mp4
+  ```
+
+  where `<id>` is derived from the original video identifier
+
+#### Output images
+
+* Frames originating from standalone images are saved directly
+* Original filenames are preserved
+* These images are **not included in any video**, since they weren't originally extracted from a video
+
+### 2.4 Final Output Summary
+
+| Input Type      | Output                                           |
+| --------------- | ------------------------------------------------ |
+| Video           | Reconstructed `.mp4` with drawn boxes and labels |
+| Image           | Annotated image saved directly                   |
+| Multiple videos | One output video per input video                 |
+| Mixed inputs    | Videos + images handled independently            |
+
 
 ## Team members and individual responsibilities <br>
 Karina Antoniu was tasked with creating the ML model and writing the training / inference logic. Andrei Bădulescu was responsible with writing the Windows application that functions over the ML model and the processing pipelines and offers an easy-to-learn, intuitive interface for users that do not have a technology-oriented background. Ștefan Mărășescu was responsible with obtaining the data necessary to train the ML model and create the processing pipelines that enable an easier interaction with the ML model.
