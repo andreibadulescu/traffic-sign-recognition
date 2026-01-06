@@ -14,6 +14,23 @@ from dataset import GetData
 import config
 import gc
 
+def transfer_learning(model, path):
+	oldWeights = torch.load(path, map_location=config.DEVICE) # load old weights for transfer learning
+
+	if "state_dict" in oldWeights:
+		oldWeights = oldWeights["state_dict"]
+
+	model_dict = model.state_dict()
+	pretrained_dict = {}
+	for k, v in oldWeights.items():
+		if k in model_dict and v.shape == model_dict[k].shape:
+			pretrained_dict[k] = v
+
+    # update the model
+	model_dict.update(pretrained_dict)
+	model.load_state_dict(model_dict, strict=False)
+
+
 def train_fn(train_loader, model, optimizer, loss_fn):
     loop = tqdm(train_loader, leave=True)
     mean_loss = []
@@ -24,7 +41,7 @@ def train_fn(train_loader, model, optimizer, loss_fn):
         with torch.amp.autocast('cuda', enabled=torch.cuda.is_available()):
             out = model(x) # forward pass
             loss = loss_fn(out, y) # calculez loss-ul pt batchul curent
-        
+
         loss_value = loss.item()
         mean_loss.append(loss_value)
 
@@ -47,37 +64,55 @@ def train_fn(train_loader, model, optimizer, loss_fn):
     return mean_loss_val
 
 def main():
-    scaler = torch.amp.GradScaler('cuda', enabled=torch.cuda.is_available())
-    model = YoloV1().to(config.DEVICE)
-    optimizer = optim.Adam(model.parameters(), lr=config.LEARNING_RATE)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=5) # folosim un scheduler ca sa reduca learning rate-ul daca loss-ul stagneaza
-    loss_fn = CostFunction()
-    
-    files = os.listdir(config.TRAIN_IMG_DIR)
-    img_files = []
-    label_files = []
-    
-    for file in files:
-        if file.endswith(".jpg") or file.endswith(".png"):
-            img_path = os.path.join(config.TRAIN_IMG_DIR, file)
+	model = YoloV1().to(config.DEVICE)
+	loss_fn = CostFunction()
+	scaler = torch.amp.GradScaler('cuda', enabled=torch.cuda.is_available())
+
+	path = "weights/yolo..."
+	transfer_learning(model, path) # load old weights
+	# freeze all blocks except the last layer
+	for name, parameters in model.named_parameters():
+		if "block_final" in name:
+			parameters.requires_grad = True
+		else:
+			parameters.requires_grad = False
+
+
+	# optimizer only for active parameters
+	params_to_update = []
+	for p in model.parameters():
+		if p.requires_grad:
+			params_to_update.append(p)
+
+	optimizer = optim.Adam(params_to_update, lr=config.LEARNING_RATE)
+	scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=5) # folosim un scheduler ca sa reduca learning rate-ul daca loss-ul stagneaza
+
+
+	files = os.listdir(config.TRAIN_IMG_DIR)
+	img_files = []
+	label_files = []
+
+	for file in files:
+		if file.endswith(".jpg") or file.endswith(".png"):
+			img_path = os.path.join(config.TRAIN_IMG_DIR, file)
 
             # adaugam labeluri imaginilor
-            label_name = file.rsplit('.', 1)[0] + ".txt"
-            label_path = os.path.join(config.TRAIN_LABEL_DIR, label_name)
-            
-            if os.path.exists(label_path):
-                img_files.append(img_path)
-                label_files.append(label_path)
+			label_name = file.rsplit('.', 1)[0] + ".txt"
+			label_path = os.path.join(config.TRAIN_LABEL_DIR, label_name)
 
-    train_dataset = GetData(
-        imgDir=img_files, 
+			if os.path.exists(label_path):
+				img_files.append(img_path)
+				label_files.append(label_path)
+
+	train_dataset = GetData(
+        imgDir=img_files,
         labelsDir=label_files,
-        S=config.S, 
-        B=config.B, 
+        S=config.S,
+        B=config.B,
         C=config.C
     )
 
-    train_loader = DataLoader(
+	train_loader = DataLoader(
         dataset=train_dataset,
         batch_size=config.BATCH_SIZE,
         shuffle=True,
@@ -86,19 +121,20 @@ def main():
         num_workers=0
     )
 
-    for epoch in range(config.EPOCHS):
-        torch.cuda.empty_cache()
-        print(f"Epoch [{epoch+1}/{config.EPOCHS}]")
+	for epoch in range(config.EPOCHS):
+		torch.cuda.empty_cache()
+		print(f"Epoch [{epoch+1}/{config.EPOCHS}]")
+		model.train()
 
-        mean_loss = train_fn(train_loader, model, optimizer, loss_fn) # antrenam o epoca
-        scheduler.step(mean_loss) # ajustam learning rate-ul
-        
-        # salvam modelul
-        if (epoch+1) % config.saveEvery == 0:
-          save_path = f"weights/yolov1_epoch{epoch+1}.pth"
-          torch.save(model.state_dict(), save_path)
-          print(f"Model salvat: {save_path}")
-          print("Model saved!")
+		mean_loss = train_fn(train_loader, model, optimizer, loss_fn) # antrenam o epoca
+		scheduler.step(mean_loss) # ajustam learning rate-ul
+
+		# salvam modelul
+		if (epoch+1) % config.saveEvery == 0:
+			save_path = f"weights/yolov1_epoch{epoch+1}.pth"
+			torch.save(model.state_dict(), save_path)
+			print(f"Model salvat: {save_path}")
+			print("Model saved!")
 
 if __name__ == "__main__":
     main()
