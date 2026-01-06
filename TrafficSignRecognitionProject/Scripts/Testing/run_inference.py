@@ -73,7 +73,7 @@ def run_inference():
 
 		for box in boxes:
 			# x, y = center of box, all values are normalized
-			x, y, width, height, confidence, class_id = box.tolist()
+			x, y, width, height, confidence, class_id = box
 
 			if confidence < CONFIDENCE_THRESHOLD:
 				continue # skip poor predictions
