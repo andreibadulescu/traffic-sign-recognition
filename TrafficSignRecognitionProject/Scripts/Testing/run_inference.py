@@ -2,6 +2,7 @@ import sys
 import torch
 import os
 import torchvision.transforms as transforms
+from utils import nonMaxSuppression, convert_cellboxes
 
 # add ../ML to program Path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -40,7 +41,7 @@ def run_inference():
 
 	# load sign classes labels and create (id, class_name) mapping
 	label_mapping = create_sign_mapping(SIGN_LABELS_PATH)
-	  
+
 	# iterate over all extracted frames
 	for frame in sorted(os.listdir(EXTRACTED_FRAMES_PATH)):
 		# open the frame and resize it to expected model input size
@@ -63,7 +64,12 @@ def run_inference():
 		drawable = ImageDraw.Draw(image)
 
 		# fetch list of bounding boxes from prediction
-		boxes = nonMaxSuppression(prediction)
+		#boxes = nonMaxSuppression(prediction)
+
+		# the yolo model returns a tensor shaped (1, 7, 30), but NMS takes as input a list [x, y, w, h, scor, clasa]
+		bboxes = convert_cellboxes(prediction)
+		bboxes = bboxes[0].reshape(-1, 6).tolist()
+		boxes = nonMaxSuppression(bboxes)
 
 		for box in boxes:
 			# x, y = center of box, all values are normalized
@@ -92,7 +98,7 @@ def run_inference():
 			# draw rectangle based on bounding box coordinates and write class name
 			drawable.rectangle([x_min, y_min, x_max, y_max], outline = "green", width = 3)
 			drawable.text((x_min, y_min - 10), class_name, fill = "green")
-		
+
 		# save the image with drawn bounding boxes
 		os.makedirs(DRAWN_IMAGES_PATH, exist_ok=True)
 		output_img_path = os.path.join(DRAWN_IMAGES_PATH, frame)
