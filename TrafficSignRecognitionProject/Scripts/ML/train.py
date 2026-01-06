@@ -88,7 +88,7 @@ def main():
 	else:
 		weights_to_load = base_weights
 
-	model = YoloV1().to(config.DEVICE)
+	model = YoloV1(nrClasses=config.C).to(config.DEVICE)
 	loss_fn = CostFunction()
 	scaler = torch.amp.GradScaler('cuda', enabled=torch.cuda.is_available())
 
