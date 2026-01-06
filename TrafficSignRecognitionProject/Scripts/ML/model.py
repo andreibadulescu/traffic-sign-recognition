@@ -1,9 +1,9 @@
-# 1st module 
+# 1st module
 
 # import torch
 # import torch.nn as nn
 
-# When creating a new neural network, you would usually go about creating a new class and inheriting from nn.Module, and defining two methods: __init__ (the initializer, where you define your layers) and forward (the inference code of your module, where you use your layers). That's all you need, since PyTorch will handle backward pass with Autograd. 
+# When creating a new neural network, you would usually go about creating a new class and inheriting from nn.Module, and defining two methods: __init__ (the initializer, where you define your layers) and forward (the inference code of your module, where you use your layers). That's all you need, since PyTorch will handle backward pass with Autograd.
 # ACTUAL YOLO V1 MODEL
 
 # class YoloV1(nn.Module):
@@ -55,7 +55,7 @@
 #             nn.Conv2d(in_channels=1024, out_channels=512, kernel_size=(1, 1), padding='same'),
 #             nn.Conv2d(in_channels=512, out_channels=1024, kernel_size=(3, 3), padding='same'),
 #             nn.Conv2d(in_channels=1024, out_channels=512, kernel_size=(1, 1), padding='same'),
-#             nn.Conv2d(in_channels=512, out_channels=1024, kernel_size=(3, 3), padding='same'), 
+#             nn.Conv2d(in_channels=512, out_channels=1024, kernel_size=(3, 3), padding='same'),
 #             nn.Conv2d(in_channels=1024, out_channels=1024, kernel_size=(3, 3), padding='same'),
 #             nn.Conv2d(in_channels=1024, out_channels=1024, kernel_size=(3, 3), padding=1, stride=(2, 2)),
 #         )
@@ -71,7 +71,7 @@
 #             nn.LeakyReLU(0.1),
 #             nn.Dropout(0.5),
 #             nn.Linear(4096, self.S * self.S * self.outputDim),
-#             nn.Sigmoid()   
+#             nn.Sigmoid()
 #         )
 
 #     def forward(self, x):
@@ -84,7 +84,7 @@
 #             x = self.block7(x)
 #             x = x.reshape(-1, self.S, self.S, self.outputDim)
 
-#             return x  
+#             return x
 
 
 import torch
@@ -93,10 +93,10 @@ import torch.nn as nn
 class YoloV1(nn.Module):
     def __init__(self):
         super().__init__()
-        self.S = 7 
-        self.C = 45 
-        self.B = 2 
-        self.outputDim = self.B * 5 + self.C 
+        self.S = 7
+        self.C = 100
+        self.B = 2
+        self.outputDim = self.B * 5 + self.C
 
         self.block1 = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=16, kernel_size=(7, 7), stride=(2, 2), padding=3),
@@ -136,7 +136,7 @@ class YoloV1(nn.Module):
             nn.LeakyReLU(0.1),
             nn.Dropout(0.5),
             nn.Linear(256, self.S * self.S * self.outputDim),
-            nn.Sigmoid()   
+            nn.Sigmoid()
         )
 
     def forward(self, x):
@@ -146,6 +146,6 @@ class YoloV1(nn.Module):
         x = self.block4(x)
         x = self.block5(x)
         x = self.block_final(x)
-        
+
         x = x.reshape(-1, self.S, self.S, self.outputDim)
         return x

@@ -24,6 +24,8 @@
     <None Remove="Assets\Limit60.jpg" />
     <None Remove="Assets\Limit70.png" />
     <None Remove="Assets\Limit80.jpg" />
+    <None Remove="Assets\Square150x150Logo.scale-200.png" />
+    <None Remove="Assets\Square44x44Logo.scale-200.png" />
     <None Remove="Assets\WindowIcon.ico" />
   </ItemGroup>
 

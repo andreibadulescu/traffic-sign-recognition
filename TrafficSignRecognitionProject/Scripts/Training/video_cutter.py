@@ -4,10 +4,13 @@ import pandas as pd
 import moviepy as mp
 from PIL import Image
 
-OUTPUT_DIR = "extracted_frames"
+OUTPUT_DIR = "./extracted_frames"
 RESIZE_HEIGHT = 720
 RESIZE_RESOLUTION = (1280, 720) # 720p resolution
 TARGET_FPS = 10
+
+IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png"]
+VIDEO_EXTENSIONS = [".mp4", ".avi", ".mov"]
 
 def timestamp_to_seconds(timestamp):
     hours = int(timestamp[0:2])
@@ -50,34 +53,11 @@ def extract_timestamps(csv_path, video_duration):
     return timestamps
 
 
-def main():
-    # check command line arguments
-    if len(sys.argv) != 3:
-        print("Usage: python video_cutter.py <input_video_path> <timestamps_csv_path>", file=sys.stderr)
-        sys.exit(1)
-
-    # fetch the command line arguments
-    input_video_path = sys.argv[1]
-    timestamps_csv_path = sys.argv[2]
-
-    # check if input files exist
-    if not os.path.isfile(input_video_path):
-        print("Input video file does not exist", file=sys.stderr)
-        sys.exit(1)
-
-    if not os.path.isfile(timestamps_csv_path):
-        print("Timestamps CSV file does not exist", file=sys.stderr)
-        sys.exit(1)
-
+def process_video(input_video_path, timestamps_csv_path, frame_id):
     video = mp.VideoFileClip(input_video_path)
 
     # create a list of valid (start, end) timestamp tuplets
     timestamps = extract_timestamps(timestamps_csv_path, video.duration)
-
-    # create or replace output directory
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-
-    frame_number = 0
 
     # extract and save frames from subclips based on the timestamps
     for (start, end) in timestamps:
@@ -89,13 +69,68 @@ def main():
         # extract 10 equidistant individual frames per second save them as JPEG images 
         for frame in subclip.iter_frames(fps = TARGET_FPS, dtype = 'uint8'):
             # create the path for the output frame image with zero-padded numbering
-            frame_path = os.path.join(OUTPUT_DIR, f"frame_{frame_number:05d}.jpg")
+            frame_path = os.path.join(OUTPUT_DIR, f"frame_{frame_id:05d}.jpg")
             Image.fromarray(frame).save(frame_path, "JPEG")
-            frame_number += 1
+            frame_id += 1
 
         subclip.close()
 
     video.close()
+    return frame_id
+
+
+def process_frame(frame_path, frame_id):
+    # open the image file
+    with Image.open(frame_path) as image:
+        # resize image to 720p using lanczos resampling
+        image = image.resize(RESIZE_RESOLUTION, Image.LANCZOS)
+         # save the resized image to the frames directory
+        output_frame_path = os.path.join(OUTPUT_DIR, f"frame_{frame_id:05d}.jpg")
+        image.save(output_frame_path, "JPEG")
+
+def main():
+    # check command line arguments
+    if len(sys.argv) != 2:
+        print("Usage: python video_cutter.py <directory_path>", file=sys.stderr)
+        sys.exit(1)
+
+    # fetch the command line argument
+    input_dir_path = sys.argv[1]
+
+    # check if input files exist
+    if not os.path.isdir(input_dir_path):
+        print("Input directory does not exist", file=sys.stderr)
+        sys.exit(1)
+
+    # create or replace output directory
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    frame_id = 0
+
+    # go through all the files in directory
+    for filename in os.listdir(input_dir_path):
+        file_path = os.path.join(input_dir_path, filename)
+
+        # check if the file is a video or image by its extension
+        split_filename = os.path.splitext(filename)
+        file_extension = split_filename[1].lower()
+
+        if file_extension in VIDEO_EXTENSIONS:
+            # video file
+            input_video_path = file_path
+            timestamps_csv_path = os.path.join(input_dir_path, split_filename[0] + ".csv")
+            
+            if not os.path.isfile(timestamps_csv_path):
+                print(f"Corresponding CSV file not found for video: {input_video_path}", file=sys.stderr)
+            else:
+                frame_id = process_video(input_video_path, timestamps_csv_path, frame_id)
+        elif file_extension in IMAGE_EXTENSIONS:
+            # image file
+            process_frame(file_path, frame_id)
+            frame_id += 1
+        else:
+            # invalid file type
+            print(f"Invalid file type: {file_path}", file=sys.stderr)
 
 
 if __name__ == "__main__":

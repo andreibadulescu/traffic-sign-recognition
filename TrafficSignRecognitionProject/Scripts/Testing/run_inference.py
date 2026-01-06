@@ -2,7 +2,6 @@ import sys
 import torch
 import os
 import torchvision.transforms as transforms
-from utils import nonMaxSuppression, convert_cellboxes
 
 # add ../ML to program Path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -12,7 +11,7 @@ weights_dir = os.path.join(ml_dir, 'weights')
 sys.path.append(ml_dir)
 
 from model import YoloV1
-from utils import nonMaxSuppression
+from utils import nonMaxSuppression, convert_cellboxes
 from PIL import Image
 from PIL import ImageDraw
 
