@@ -91,7 +91,6 @@ public partial class TrainViewModel : ObservableRecipient
 
             await _service.RunAsync(folderPath, ContentIsYOLOAnnotated.GetValueOrDefault());
 
-            ShowExitMessage = Visibility.Collapsed;
             ExitMessage = "Success!\nModel has been trained successfully.";
         }
         catch (Exception e)

@@ -96,6 +96,8 @@ public class TrainPythonService
                 throw new Exception($"Training Python Model failed: {error}");
             }
 
+            System.Diagnostics.Debug.WriteLine(output);
+
             return output;
         });
     }

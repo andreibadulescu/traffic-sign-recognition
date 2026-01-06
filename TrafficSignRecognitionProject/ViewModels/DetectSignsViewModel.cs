@@ -8,6 +8,8 @@ using TrafficSignRecognitionProject.Core.Models;
 using TrafficSignRecognitionProject.Models;
 using TrafficSignRecognitionProject.Services;
 using Windows.Devices.Sms;
+using Windows.Storage;
+using Windows.System;
 
 namespace TrafficSignRecognitionProject.ViewModels;
 
@@ -136,13 +138,32 @@ public partial class DetectSignsViewModel : ObservableRecipient
                 {
                     Filename = tokens[0],
                     SymbolName = tokens[1],
-                    ModifiedImage = "Annotated image at: " + tokens[2]
+                    ModifiedImage = tokens[2]
                 });
             }
             else
             {
                 throw new Exception("ParseResults: Too many tokens for a result entry!");
             }
+        }
+    }
+
+    [RelayCommand]
+    public async Task OpenAnnotatedAsync(string annotatedImage)
+    {
+        try
+        {
+            annotatedImage = annotatedImage.Trim();
+            string tempFolder = Path.GetTempPath();
+            string fileName = Path.GetFileName(annotatedImage);
+            string tempFilePath = Path.Combine(tempFolder, fileName);
+            File.Copy(annotatedImage, tempFilePath, true);
+            StorageFile file = await StorageFile.GetFileFromPathAsync(tempFilePath);
+            await Launcher.LaunchFileAsync(file);
+        }
+        catch (Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error while opening annotated file: {e.Message}");
         }
     }
 

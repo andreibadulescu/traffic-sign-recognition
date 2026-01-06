@@ -203,7 +203,7 @@
   <data name="Train_ContentCheck.Content" xml:space="preserve">
     <value>Data is annotated following YOLO convention</value>
   </data>
-  <data name="Detect_ResultAnnotatedPicture" xml:space="preserve">
+  <data name="Detect_ResultAnnotatedPicture.Content" xml:space="preserve">
     <value>Open annotated frame</value>
   </data>
 </root>
