@@ -4,6 +4,7 @@ import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
 import os
+import argparse
 from tqdm import tqdm
 
 torch.autograd.set_detect_anomaly(True) # detecteaza operatii care dau erori la backprop (pt debug)
@@ -31,45 +32,68 @@ def transfer_learning(model, path):
 	model.load_state_dict(model_dict, strict=False)
 
 
-def train_fn(train_loader, model, optimizer, loss_fn):
-    loop = tqdm(train_loader, leave=True)
-    mean_loss = []
+def train_fn(train_loader, model, optimizer, loss_fn, scaler):
+	loop = tqdm(train_loader, leave=True)
+	mean_loss = []
 
-    for batch_idx, (x, y) in enumerate(loop):
-        x, y = x.to(config.DEVICE), y.to(config.DEVICE)
+	for batch_idx, (x, y) in enumerate(loop):
+		x, y = x.to(config.DEVICE), y.to(config.DEVICE)
 
-        with torch.amp.autocast('cuda', enabled=torch.cuda.is_available()):
-            out = model(x) # forward pass
-            loss = loss_fn(out, y) # calculez loss-ul pt batchul curent
+		with torch.amp.autocast('cuda', enabled=torch.cuda.is_available()):
+			out = model(x) # forward pass
+			loss = loss_fn(out, y) # calculez loss-ul pt batchul curent
 
-        loss_value = loss.item()
-        mean_loss.append(loss_value)
+		loss_value = loss.item()
+		mean_loss.append(loss_value)
 
-        # 3. Backward pass
-        optimizer.zero_grad()
-        loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0) # limiteaza gradientii sa nu explodeze
-        optimizer.step()
+		# 3. Backward pass
+		optimizer.zero_grad()
+		scaler.scale(loss).backward()
+		scaler.step(optimizer)
+		scaler.update()
 
-        # elibereaza memoria inutila
-        del x, y, out, loss
-        torch.cuda.empty_cache() # Curata VRAM
+		# loss.backward()
+		# torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0) # limiteaza gradientii sa nu explodeze
+		# optimizer.step()
 
-        # updateaza bara de progres
-        loop.set_postfix(loss=loss_value)
+		# elibereaza memoria inutila
+		del x, y, out, loss
+		torch.cuda.empty_cache() # Curata VRAM
 
-    # facem media losului pe epoca
-    mean_loss_val = sum(mean_loss) / len(mean_loss)
-    print(f"Mean loss was {mean_loss_val}")
-    return mean_loss_val
+		# updateaza bara de progres
+		loop.set_postfix(loss=loss_value)
+
+	# facem media losului pe epoca
+	mean_loss_val = sum(mean_loss) / len(mean_loss)
+	print(f"Mean loss was {mean_loss_val}")
+	return mean_loss_val
 
 def main():
+
+	parser = argparse.ArgumentParser()
+
+	parser.add_argument('--img_dir', type=str, default=config.TRAIN_IMG_DIR, help='Image path')
+	parser.add_argument('--label_dir', type=str, default=config.TRAIN_LABEL_DIR, help='Labels path')
+
+	args = parser.parse_args()
+
+	current_img_dir = args.img_dir
+	current_label_dir = args.label_dir
+
+	base_weights = "weights/yolov1_epoch100.pth"
+	retrained_weights_path = "weights/yolov1_custom.pth"
+
+	if os.path.exists(retrained_weights_path):
+		weights_to_load = retrained_weights_path
+	else:
+		weights_to_load = base_weights
+
 	model = YoloV1().to(config.DEVICE)
 	loss_fn = CostFunction()
 	scaler = torch.amp.GradScaler('cuda', enabled=torch.cuda.is_available())
 
-	path = "weights/yolo..."
-	transfer_learning(model, path) # load old weights
+	transfer_learning(model, weights_to_load) # load old weights
+
 	# freeze all blocks except the last layer
 	for name, parameters in model.named_parameters():
 		if "block_final" in name:
@@ -88,17 +112,17 @@ def main():
 	scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=5) # folosim un scheduler ca sa reduca learning rate-ul daca loss-ul stagneaza
 
 
-	files = os.listdir(config.TRAIN_IMG_DIR)
+	files = os.listdir(current_img_dir)
 	img_files = []
 	label_files = []
 
 	for file in files:
 		if file.endswith(".jpg") or file.endswith(".png"):
-			img_path = os.path.join(config.TRAIN_IMG_DIR, file)
+			img_path = os.path.join(current_img_dir, file)
 
             # adaugam labeluri imaginilor
 			label_name = file.rsplit('.', 1)[0] + ".txt"
-			label_path = os.path.join(config.TRAIN_LABEL_DIR, label_name)
+			label_path = os.path.join(current_label_dir, label_name)
 
 			if os.path.exists(label_path):
 				img_files.append(img_path)
@@ -126,14 +150,14 @@ def main():
 		print(f"Epoch [{epoch+1}/{config.EPOCHS}]")
 		model.train()
 
-		mean_loss = train_fn(train_loader, model, optimizer, loss_fn) # antrenam o epoca
+		mean_loss = train_fn(train_loader, model, optimizer, loss_fn, scaler) # antrenam o epoca
 		scheduler.step(mean_loss) # ajustam learning rate-ul
 
 		# salvam modelul
 		if (epoch+1) % config.saveEvery == 0:
-			save_path = f"weights/yolov1_epoch{epoch+1}.pth"
-			torch.save(model.state_dict(), save_path)
-			print(f"Model salvat: {save_path}")
+			#save_path = f"weights/yolov1_epoch{epoch+1}.pth"
+			torch.save(model.state_dict(), retrained_weights_path)
+			print(f"Model salvat: {retrained_weights_path}")
 			print("Model saved!")
 
 if __name__ == "__main__":
