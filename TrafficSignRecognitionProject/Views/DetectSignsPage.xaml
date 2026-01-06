@@ -11,7 +11,7 @@
     <Grid>
         <StackPanel Spacing="30" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{x:Bind ViewModel.ShowDialogue, Mode=OneWay}" >
             <TextBlock x:Uid="Detect_InitialMessage" Style="{ThemeResource BodyTextStyle}" HorizontalTextAlignment="Center" />
-            <Button x:Uid="Detect_SelectButton" Name="DetectSelectButton" Style="{StaticResource AccentButtonStyle}" Command="{x:Bind ViewModel.PickFolderCommand}" CommandParameter="{x:Bind DetectSelectButton}" HorizontalAlignment="Center" />
+            <Button x:Uid="Detect_SelectButton" Name="DetectSelectButton"  Command="{x:Bind ViewModel.PickFolderCommand}" CommandParameter="{x:Bind DetectSelectButton}" HorizontalAlignment="Center" />
             <TextBlock x:Name="StatusWindow" Text="{x:Bind ViewModel.ExitMessage, Mode=OneWay}" Visibility="{x:Bind ViewModel.ShowExitMessage, Mode=OneWay}" HorizontalTextAlignment="Center" Style="{ThemeResource BodyStrongTextBlockStyle}" />
             <ProgressRing IsActive="{x:Bind ViewModel.IsProcessing}" Visibility="{x:Bind ViewModel.ShowProcessingIcon}" HorizontalAlignment="Center"/>
         </StackPanel>
@@ -23,8 +23,8 @@
             </Grid.RowDefinitions>
 
             <StackPanel Orientation="Horizontal" Spacing="20" Margin="0,0,0,20">
-                <Button x:Uid="Detect_SelectOtherFolder" Command="{x:Bind ViewModel.ResetViewCommand}" />
-                <TextBlock x:Uid="Detect_ResultsHeader" Style="{ThemeResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
+                <TextBlock x:Uid="Detect_ResultsHeader" Style="{ThemeResource SubtitleTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <Button x:Uid="Detect_SelectOtherFolder" Command="{x:Bind ViewModel.ResetViewCommand}" HorizontalAlignment="Right" Style="{StaticResource SubtleButtonStyle}" />
             </StackPanel>
 
             <ListView Grid.Row="1" ItemsSource="{x:Bind ViewModel.detectedSigns, Mode=OneWay}">
@@ -39,7 +39,7 @@
                             <TextBlock Text="{x:Bind Filename}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center" />
 
                             <Border Grid.Column="1" Background="{ThemeResource SystemControlBackgroundBaseLowBrush}" CornerRadius="4" Padding="8,4">
-                                <TextBlock Text="{x:Bind SymbolName}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center" />
+                                <TextBlock Text="{x:Bind SymbolName}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Left" />
                             </Border>
                         </Grid>
                     </DataTemplate>

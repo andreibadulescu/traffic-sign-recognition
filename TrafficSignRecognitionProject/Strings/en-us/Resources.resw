@@ -194,7 +194,7 @@
   <data name="Detect_InitialMessage.Text" xml:space="preserve">
     <value>Please select a folder that contains pictures and/or videos of traffic signs. The model will infer the sign present in each picture/frame. After the analysis ends, the results are placed into a list.</value>
   </data>
-  <data name="Detect_SelectAnotherFolder.Content" xml:space="preserve">
+  <data name="Detect_SelectOtherFolder.Content" xml:space="preserve">
     <value>Scan new folder</value>
   </data>
   <data name="Detect_ResultsHeader.Text" xml:space="preserve">
