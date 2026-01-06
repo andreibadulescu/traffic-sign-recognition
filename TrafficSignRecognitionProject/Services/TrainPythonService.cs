@@ -9,16 +9,16 @@ namespace TrafficSignRecognitionProject.Services;
 
 public class TrainPythonService
 {
-    private readonly string _execPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "dataset_preparator.py");
-    private readonly string _cutterPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "video_cutter.py");
+    private readonly string _execPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "Training", "dataset_preparator.py");
+    private readonly string _cutterPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "Training", "video_cutter.py");
+    private readonly string _trainPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "ML", "aaaa.py");
 
-    public async Task<String> RunAsync(string folderPath)
+    public async Task<String> RunAsync(string folderPath, bool isContentAnnotated)
     {
         var processConfig = new ProcessStartInfo
         {
             FileName = "python",
             Arguments = $"\"{_execPath}\" \"{folderPath}\"",
-            RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
             CreateNoWindow = true
@@ -28,6 +28,17 @@ public class TrainPythonService
         {
             FileName = "python",
             Arguments = $"\"{_cutterPath}\" \"{folderPath}\"",
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        var trainConfig = new ProcessStartInfo
+        {
+            FileName = "python",
+            Arguments = $"\"{_trainPath}\" \"{folderPath}\"",
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
             UseShellExecute = false,
             CreateNoWindow = true
         };
@@ -49,9 +60,27 @@ public class TrainPythonService
             }
         });
 
+        if (!isContentAnnotated)
+            await Task.Run(async () =>
+            {
+                using var process = new Process { StartInfo = processConfig };
+                process.Start();
+
+                var errorAsync = process.StandardError.ReadToEndAsync();
+
+                await process.WaitForExitAsync();
+
+                var error = await errorAsync;
+
+                if (process.ExitCode != 0)
+                {
+                    throw new Exception($"Preparator failed: {error}");
+                }
+            });
+
         return await Task.Run(async () =>
         {
-            using var process = new Process { StartInfo = processConfig };
+            using var process = new Process { StartInfo = trainConfig };
             process.Start();
 
             var outputAsync = process.StandardOutput.ReadToEndAsync();
@@ -64,7 +93,7 @@ public class TrainPythonService
 
             if (process.ExitCode != 0)
             {
-                throw new Exception($"Python script failed: {error}");
+                throw new Exception($"Training Python Model failed: {error}");
             }
 
             return output;

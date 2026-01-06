@@ -19,55 +19,55 @@ public class CatalogueDataService : IDefaultDataService
             {
                 SignID = 1,
                 Name = "Speed Limit 20",
-                SymbolName="Limit20.jpg"
+                SymbolName="Limit20"
             },
             new()
             {
                 SignID = 2,
                 Name = "Speed Limit 30",
-                SymbolName="Limit30.jpg"
+                SymbolName="Limit30"
             },
             new()
             {
                 SignID = 3,
                 Name = "Speed Limit 50",
-                SymbolName="Limit50.png"
+                SymbolName="Limit50"
             },
             new()
             {
                 SignID = 4,
                 Name = "Speed Limit 60",
-                SymbolName="Limit60.jpg"
+                SymbolName="Limit60"
             },
             new()
             {
                 SignID = 5,
                 Name = "Speed Limit 70",
-                SymbolName="Limit70.png"
+                SymbolName="Limit70"
             },
             new()
             {
                 SignID = 6,
                 Name = "Speed Limit 80",
-                SymbolName="Limit80.jpg"
+                SymbolName="Limit80"
             },
             new()
             {
                 SignID = 7,
                 Name = "Speed Limit 100",
-                SymbolName="Limit100.jpg"
+                SymbolName="Limit100"
             },
             new()
             {
                 SignID = 8,
                 Name = "Speed Limit 110",
-                SymbolName="Limit110.png"
+                SymbolName="Limit110"
             },
             new()
             {
                 SignID = 9,
                 Name = "Speed Limit 120",
-                SymbolName="Limit120.jpg"
+                SymbolName="Limit120"
             },
             new()
             {
@@ -218,6 +218,30 @@ public class CatalogueDataService : IDefaultDataService
                 SignID = 34,
                 Name = "Yield",
                 SymbolName="Yield"
+            },
+            new()
+            {
+                SignID = 35,
+                Name = "Bicycle Path",
+                SymbolName="BicyclePath"
+            },
+            new()
+            {
+                SignID = 36,
+                Name = "Straight or Left",
+                SymbolName="StraightLeft"
+            },
+            new()
+            {
+                SignID = 37,
+                Name = "Left Curve",
+                SymbolName="LeftCurve"
+            },
+            new()
+            {
+                SignID = 38,
+                Name = "Multiple Curves",
+                SymbolName="MultipleCurves"
             }
         };
     }

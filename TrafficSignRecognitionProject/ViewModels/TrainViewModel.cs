@@ -85,7 +85,9 @@ public partial class TrainViewModel : ObservableRecipient
             ShowExitMessage = Visibility.Visible;
             ExitMessage = "Processing...\nDo not change tabs.";
 
-            await _service.RunAsync(folderPath);
+
+            // TODO: Modify true to reflect user choice!
+            await _service.RunAsync(folderPath, true);
 
             ShowExitMessage = Visibility.Collapsed;
             ExitMessage = "Success!\nModel has been trained successfully.";

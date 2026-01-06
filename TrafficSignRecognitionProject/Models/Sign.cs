@@ -17,7 +17,7 @@ public class Sign
         get; set;
     }
 
-    public string FullSymbolName => $"/Assets/{SymbolName}";
+    public string FullSymbolName => $"/Assets/SignCatalogue/{SymbolName}.png";
 
     public override string ToString() => $"{Name} {SymbolName}";
 }
