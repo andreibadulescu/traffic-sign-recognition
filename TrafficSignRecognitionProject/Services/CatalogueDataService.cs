@@ -86,6 +86,138 @@ public class CatalogueDataService : IDefaultDataService
                 SignID = 12,
                 Name = "Arrow Green Semaphore",
                 SymbolName="SemaphoreGreenArrow"
+            },
+            new()
+            {
+                SignID = 13,
+                Name = "Wrong Way",
+                SymbolName="WrongWay"
+            },
+            new()
+            {
+                SignID = 14,
+                Name = "No Turning Left",
+                SymbolName="NoTurnLeft"
+            },
+            new()
+            {
+                SignID = 15,
+                Name = "No Overtaking",
+                SymbolName="NoOvertaking"
+            },
+            new()
+            {
+                SignID = 16,
+                Name = "No Stopping",
+                SymbolName="NoStopping"
+            },
+            new()
+            {
+                SignID = 17,
+                Name = "One Way Road",
+                SymbolName="OneWayRoad"
+            },
+            new()
+            {
+                SignID = 18,
+                Name = "Other Dangers",
+                SymbolName="OtherDangers"
+            },
+            new()
+            {
+                SignID = 19,
+                Name = "Parking",
+                SymbolName="Parking"
+            },
+            new()
+            {
+                SignID = 20,
+                Name = "Pass on Either Side",
+                SymbolName="PassEitherSide"
+            },
+            new()
+            {
+                SignID = 21,
+                Name = "Pass on Left",
+                SymbolName="PassLeft"
+            },
+            new()
+            {
+                SignID = 22,
+                Name = "Pass on Right",
+                SymbolName="PassRight"
+            },
+            new()
+            {
+                SignID = 23,
+                Name = "Pedestrian Crossing",
+                SymbolName="PedestrianCrossing"
+            },
+            new()
+            {
+                SignID = 24,
+                Name = "Pedestrian Crossing Warning",
+                SymbolName="PedestrianCrossingWarning"
+            },
+            new()
+            {
+                SignID = 25,
+                Name = "Priority Road",
+                SymbolName="Priority"
+            },
+            new()
+            {
+                SignID = 26,
+                Name = "Roadworks",
+                SymbolName="Roadworks"
+            },
+            new()
+            {
+                SignID = 27,
+                Name = "Roundabout",
+                SymbolName="Roundabout"
+            },
+            new()
+            {
+                SignID = 28,
+                Name = "Slippery Road",
+                SymbolName="SlipperyRoad"
+            },
+            new()
+            {
+                SignID = 29,
+                Name = "Speedbump",
+                SymbolName="Speedbump"
+            },
+            new()
+            {
+                SignID = 30,
+                Name = "Stop",
+                SymbolName="Stop"
+            },
+            new()
+            {
+                SignID = 31,
+                Name = "Turn Left after Sign",
+                SymbolName="TurnLeftAfter"
+            },
+            new()
+            {
+                SignID = 32,
+                Name = "Turn Right after Sign",
+                SymbolName="TurnRightAfter"
+            },
+            new()
+            {
+                SignID = 33,
+                Name = "Two Way Traffic",
+                SymbolName="TwoWayTraffic"
+            },
+            new()
+            {
+                SignID = 34,
+                Name = "Yield",
+                SymbolName="Yield"
             }
         };
     }
