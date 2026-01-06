@@ -4,7 +4,8 @@ import pandas as pd
 import moviepy as mp
 from PIL import Image
 
-OUTPUT_DIR = "./extracted_frames"
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_DIR = os.path.join(CURRENT_DIR, "extracted_frames")
 RESIZE_HEIGHT = 720
 RESIZE_RESOLUTION = (1280, 720) # 720p resolution
 TARGET_FPS = 10
@@ -82,6 +83,9 @@ def process_video(input_video_path, timestamps_csv_path, frame_id):
 def process_frame(frame_path, frame_id):
     # open the image file
     with Image.open(frame_path) as image:
+        # remove transparency if image has transparency
+        if image.mode in ("RGBA", "P"): 
+            image = image.convert("RGB")
         # resize image to 720p using lanczos resampling
         image = image.resize(RESIZE_RESOLUTION, Image.LANCZOS)
          # save the resized image to the frames directory
@@ -128,9 +132,9 @@ def main():
             # image file
             process_frame(file_path, frame_id)
             frame_id += 1
-        else:
+        # else:
             # invalid file type
-            print(f"Invalid file type: {file_path}", file=sys.stderr)
+            # print(f"Invalid file type: {file_path}", file=sys.stderr)
 
 
 if __name__ == "__main__":

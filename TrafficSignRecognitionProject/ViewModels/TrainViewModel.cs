@@ -87,7 +87,7 @@ public partial class TrainViewModel : ObservableRecipient
             IsProcessing = true;
             ShowProcessingIcon = Visibility.Visible;
             ShowExitMessage = Visibility.Visible;
-            ExitMessage = $"Processing...\nDo not change tabs. {ContentIsYOLOAnnotated}";
+            ExitMessage = "Processing...\nDo not change tabs.";
 
             await _service.RunAsync(folderPath, ContentIsYOLOAnnotated.GetValueOrDefault());
 

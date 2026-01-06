@@ -15,7 +15,7 @@ from dataset import GetData
 import config
 import gc
 
-CURRENT_DIR = os.path.dirname(os.path.absname(__file__))
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 WEIGHTS_DIR = os.path.join(CURRENT_DIR, "weights")
 
 def transfer_learning(model, path):
@@ -82,8 +82,8 @@ def main():
 	current_img_dir = args.data_dir
 	current_label_dir = args.data_dir
 
-	base_weights = os.path.join(WEIGHTS_DIR, "weights.yolov1_epoch100.pth")
-	retrained_weights_path = os.path.join(WEIGHTS_DIR "yolov1_custom.pth")
+	base_weights = os.path.join(WEIGHTS_DIR, "yolov1_epoch100.pth")
+	retrained_weights_path = os.path.join(WEIGHTS_DIR, "yolov1_custom.pth")
 
 	if os.path.exists(retrained_weights_path):
 		weights_to_load = retrained_weights_path
