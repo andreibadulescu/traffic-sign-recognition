@@ -91,7 +91,7 @@ def main():
 		weights_to_load = base_weights
 
 	model = YoloV1(nrClasses=config.C).to(config.DEVICE)
-	loss_fn = CostFunction()
+	loss_fn = CostFunction(C=config.C)
 	scaler = torch.amp.GradScaler('cuda', enabled=torch.cuda.is_available())
 
 	transfer_learning(model, weights_to_load) # load old weights

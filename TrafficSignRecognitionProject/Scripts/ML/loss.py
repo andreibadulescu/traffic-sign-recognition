@@ -1,4 +1,4 @@
-# 3rd module 
+# 3rd module
 
 # import torch
 # import torch.nn as nn
@@ -24,8 +24,8 @@
 #     def forward(self, predictions, target):
 
 #         # predictions are forma (N, 7, 7, 55), N = nr de imagini
-#         # structura ultimului vector de 55x1 e asa: 
-#         # [0:4] coordonatele primei cutii, 
+#         # structura ultimului vector de 55x1 e asa:
+#         # [0:4] coordonatele primei cutii,
 #         # [4] - scorul de confidenta
 #         # [5:9] - coordonatele cutiei 2,
 #         # [9] - confidenta scor 2
@@ -37,7 +37,7 @@
 #         # [2] - latimea
 #         # [3] - inaltimea
 #         # [4] - masca (iObj) 1.0 daca exista obiect in celula, 0 altfel
-#         # [5:50] - one hot encoding 
+#         # [5:50] - one hot encoding
 
 #         lossConf, b1RespTrue, b2RespTrue = self.confidenceError(predictions, target)
 #         lossLoc = self.localizationError(target, predictions, b1RespTrue, b2RespTrue)
@@ -45,7 +45,7 @@
 
 #         totalLoss = lossLoc + lossConf + lossCross
 #         return totalLoss / predictions.shape[0]
-    
+
 
 #     # the probability that an object exists in that box and how well does the box matches the real object
 #     def confidenceError(self, predictions, target):
@@ -72,7 +72,7 @@
 #         b1RespTrue = target[..., 4:5] * b1Responsible
 #         b2RespTrue = target[..., 4:5] * b2Responsible
 
-#         # now each box is penalized differently 
+#         # now each box is penalized differently
 #         lossObj = torch.sum(b1RespTrue * (box1Conf - iouScore1) ** 2) + torch.sum(b2RespTrue * (box2Conf - iouScore2) ** 2)
 
 #         b1Noobj = 1.0 - b1RespTrue
@@ -86,7 +86,7 @@
 #     # we are using the Error Sum of Squares
 #     def localizationError(self, target, predictions, b1RespTrue, b2RespTrue):
 #         # weight to penalize the wrong position or dimension of the box
-#         lambdaCoord = 5.0 
+#         lambdaCoord = 5.0
 
 #         # to measure the difference between the predicted box and the real box we measure on coordinates:
 #         # x difference for Box1
@@ -130,12 +130,12 @@
 #     def forward(self, predictions, target):
 #         # predictions: (N, 7, 7, 30)
 #         # target: (N, 7, 7, 25)
-        
+
 #         # transformam pentru a putea lucra celula cu celula
 #         predictions = predictions.reshape(-1, self.B * 5 + self.C)
 #         target = target.reshape(-1, 5 + self.C)
 
-    
+
 #         mask_obj = (target[:, 4] == 1) # masca pentru celule cu obiect
 #         mask_noobj = (target[:, 4] == 0) # masca pentru celule fara obiect
 
@@ -161,10 +161,10 @@
 #             # --- CALCUL IoU CORECT ---
 #             # Problema geometrica: x,y sunt relative la celula (0-1), w,h sunt relative la imagine (0-1).
 #             # Pentru IoU corect, trebuie sa le aducem pe aceeasi scara. Inmultim w,h cu S (7).
-            
+
 #             box1_iou = pred_obj[:, 0:4].clone()
-#             box1_iou[:, 2:4] *= self.S 
-            
+#             box1_iou[:, 2:4] *= self.S
+
 #             box2_iou = pred_obj[:, 5:9].clone()
 #             box2_iou[:, 2:4] *= self.S
 
@@ -174,11 +174,11 @@
 #             # Calculam IoU folosind dimensiunile ajustate
 #             ious1 = IoU(box1_iou, target_iou).detach()
 #             ious2 = IoU(box2_iou, target_iou).detach()
-            
+
 #             # --- FIX CRITIC PENTRU EROAREA TA ---
 #             # ious1 are forma (N, 1). NU folosi unsqueeze(1) aici, altfel devine (N, 1, 1)
 #             # si inmultirea cu (N, 4) va produce (N, N, 4) -> Eroarea ta de broadcasting.
-#             best_box = (ious1 >= ious2).float() 
+#             best_box = (ious1 >= ious2).float()
 
 #             # -- Coordonate (Doar cutia castigatoare) --
 #             # (N, 1) * (N, 4) -> (N, 4). Corect.
@@ -222,7 +222,7 @@ class CostFunction(nn.Module):
     # 5) classification loss care se asigura ca sunt etichetate corect obiectele
 
 
-    def __init__(self):
+    def __init__(self, C=45):
         super(CostFunction, self).__init__()
 
         # yolo original foloseste Mean Squared Error
@@ -232,14 +232,14 @@ class CostFunction(nn.Module):
         # hiperparametri
         self.S = 7   # grid 7x7
         self.B = 2   # 2 box-uri per celula
-        self.C = 45  # numar de clase
+        self.C = C  # numar de clase
 
         self.lambda_noobj = 0.5   # fundalul conteaza mai putin (penalizare mica)
         self.lambda_coord = 5.0   # coordonatele conteaza mult (penalizare mare)
 
 
     def forward(self, predictions, target):
-    
+
         # predictions = [x1,y1,w1,h1,conf1, x2,y2,w2,h2,conf2, class_probs]
         # target      = [x,y,w,h,obj, class_one_hot]
 
