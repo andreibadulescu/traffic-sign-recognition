@@ -121,7 +121,7 @@ def main():
             timestamps_csv_path = os.path.join(input_dir_path, split_filename[0] + ".csv")
             
             if not os.path.isfile(timestamps_csv_path):
-                print(f"Corresponding CSV file not found for video: {input_video_path}", file=sys.stderr)
+                print(f"Corresponding CSV file {timestamps_csv_path} not found for video: {input_video_path}", file=sys.stderr)
             else:
                 frame_id = process_video(input_video_path, timestamps_csv_path, frame_id)
         elif file_extension in IMAGE_EXTENSIONS:
