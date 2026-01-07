@@ -22,15 +22,20 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" Spacing="20" Margin="0,0,0,20">
-                <TextBlock x:Uid="Detect_ResultsHeader" Style="{ThemeResource SubtitleTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <Button x:Uid="Detect_SelectOtherFolder" Command="{x:Bind ViewModel.ResetViewCommand}" HorizontalAlignment="Right" Style="{StaticResource SubtleButtonStyle}" />
-            </StackPanel>
+            <Grid Padding="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Uid="Detect_ResultsHeader" Grid.Column="0" Style="{ThemeResource SubtitleTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <Button x:Uid="Detect_SelectOtherFolder" Grid.Column="2" Command="{x:Bind ViewModel.ResetViewCommand}" HorizontalAlignment="Right" Style="{StaticResource ButtonRevealStyle}" />
+            </Grid>
 
-            <ListView Grid.Row="1" ItemsSource="{x:Bind ViewModel.detectedSigns, Mode=OneWay}">
+            <ListView Grid.Row="1" SelectionMode="None" ItemsSource="{x:Bind ViewModel.detectedSigns, Mode=OneWay}" >
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:SignDetectionResult">
-                        <Grid Padding="10">
+                        <Grid Padding="10" Margin="0,5,0,5" BorderBrush="{ThemeResource SystemControlBackgroundBaseLowRevealBorderBrush}" BorderThickness="1" CornerRadius="10" Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
@@ -41,7 +46,14 @@
 
                             <TextBlock Text="{x:Bind Filename}" Grid.Column="0" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center" />
                             <TextBlock Text="{x:Bind SymbolName}" Grid.Column="2" Style="{ThemeResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" />
-                            <HyperlinkButton x:Uid="Detect_ResultAnnotatedPicture" Grid.Column="4" Command="{Binding ElementName=DetectSigns, Path=ViewModel.OpenAnnotatedCommand}" CommandParameter="{x:Bind ModifiedImage}" VerticalAlignment="Center" />
+                            <HyperlinkButton Grid.Column="4" Command="{Binding ElementName=DetectSigns, Path=ViewModel.OpenAnnotatedCommand}" CommandParameter="{x:Bind ModifiedImage}" VerticalAlignment="Center" >
+                                <HyperlinkButton.Content>
+                                    <StackPanel Orientation="Horizontal" Spacing="7">
+                                        <TextBlock x:Uid="Detect_ResultAnnotatedPicture" />
+                                        <FontIcon Glyph="&#xE8AD;" FontSize="12" />
+                                    </StackPanel>
+                                </HyperlinkButton.Content>
+                            </HyperlinkButton>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
