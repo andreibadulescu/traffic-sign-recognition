@@ -110,7 +110,7 @@ def main():
 		if p.requires_grad:
 			params_to_update.append(p)
 
-	optimizer = optim.Adam(params_to_update, lr=config.LEARNING_RATE)
+	optimizer = optim.Adam(params_to_update, lr=config.LEARNING_RATE, weight_decay=0.0005)
 	scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=5) # folosim un scheduler ca sa reduca learning rate-ul daca loss-ul stagneaza
 
 

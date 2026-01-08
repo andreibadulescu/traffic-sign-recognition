@@ -91,7 +91,7 @@ import torch
 import torch.nn as nn
 
 class YoloV1(nn.Module):
-    def __init__(self, nrClasses=45):
+    def __init__(self, nrClasses=15):
         super().__init__()
         self.S = 7
         self.C = nrClasses

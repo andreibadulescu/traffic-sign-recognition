@@ -7,7 +7,7 @@ PIN_MEMORY = False
 
 S = 7
 B = 2
-C = 100
+C = 15
 
 IMG_SIZE = 448
 
