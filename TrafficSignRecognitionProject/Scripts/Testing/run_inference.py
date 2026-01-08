@@ -34,7 +34,9 @@ def create_sign_mapping(labels_path):
 
 def run_inference():
 	# load model and set it to evaluation mode
-	model = YoloV1()
+	label_mapping = create_sign_mapping(SIGN_LABELS_PATH)
+	num_classes = len(label_mapping)
+	model = YoloV1(nrClasses=num_classes)
 	model.load_state_dict(torch.load(TRAINED_WEIGHTS_PATH, weights_only=True))
 	model.eval()
 
