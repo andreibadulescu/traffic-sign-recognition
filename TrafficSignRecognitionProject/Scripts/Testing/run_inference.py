@@ -13,7 +13,7 @@ sys.path.append(ml_dir)
 from model import YoloV1
 from utils import nonMaxSuppression, convert_cellboxes
 from PIL import Image
-from PIL import ImageDraw
+from PIL import ImageDraw, ImageFont
 
 TRAINED_WEIGHTS_PATH = os.path.join(weights_dir, 'yolov1_epoch100.pth')
 SIGN_LABELS_PATH = os.path.join(parent_dir, 'sign_labels.txt')
@@ -37,6 +37,8 @@ def run_inference():
 	model = YoloV1()
 	model.load_state_dict(torch.load(TRAINED_WEIGHTS_PATH, weights_only=True))
 	model.eval()
+
+	customFont = ImageFont.truetype("arial.ttf", 30)
 
 	# load sign classes labels and create (id, class_name) mapping
 	label_mapping = create_sign_mapping(SIGN_LABELS_PATH)
@@ -95,7 +97,7 @@ def run_inference():
 
 			# draw rectangle based on bounding box coordinates and write class name
 			drawable.rectangle([x_min, y_min, x_max, y_max], outline = "green", width = 3)
-			drawable.text((x_min, y_min - 10), class_name, fill = "green")
+			drawable.text((x_min, y_min - 10), class_name, fill = "green", font=customFont)
 			# print for frontend consumption
 			print(f"{frame} {class_name} {output_img_path}")
 
