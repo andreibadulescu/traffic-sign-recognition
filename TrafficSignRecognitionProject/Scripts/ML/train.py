@@ -71,6 +71,27 @@ def train_fn(train_loader, model, optimizer, loss_fn, scaler):
 	print(f"Mean loss was {mean_loss_val}")
 	return mean_loss_val
 
+def get_num_classes_from_labels(label_dir):
+	max_idx = -1
+	files = []
+	for f in os.listdir(label_dir):
+		if f.endswith(".txt"):
+			files.append(f)
+
+	if not files:
+		return 15 # default
+
+	for file in files:
+		path = os.path.join(label_dir, file)
+		with open(path, 'r') as f:
+			lines = f.readlines()
+			for line in lines:
+				class_id = int(line.split()[0])
+				if class_id > max_idx:
+					max_idx = class_id
+
+	return max_idx + 1
+
 def main():
 
 	parser = argparse.ArgumentParser()
@@ -82,6 +103,8 @@ def main():
 	current_img_dir = args.data_dir
 	current_label_dir = args.data_dir
 
+	detected_C = get_num_classes_from_labels(current_label_dir)
+
 	base_weights = os.path.join(WEIGHTS_DIR, "yolov1_epoch100.pth")
 	retrained_weights_path = os.path.join(WEIGHTS_DIR, "yolov1_custom.pth")
 
@@ -90,8 +113,8 @@ def main():
 	else:
 		weights_to_load = base_weights
 
-	model = YoloV1(nrClasses=config.C).to(config.DEVICE)
-	loss_fn = CostFunction(C=config.C)
+	model = YoloV1(nrClasses=detected_C).to(config.DEVICE)
+	loss_fn = CostFunction(C=detected_C)
 	scaler = torch.amp.GradScaler('cuda', enabled=torch.cuda.is_available())
 
 	transfer_learning(model, weights_to_load) # load old weights
@@ -135,7 +158,7 @@ def main():
         labelsDir=label_files,
         S=config.S,
         B=config.B,
-        C=config.C
+        C=detected_C
     )
 
 	train_loader = DataLoader(
