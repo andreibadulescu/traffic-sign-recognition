@@ -197,7 +197,7 @@ from torch.utils.data import DataLoader
 import os
 from tqdm import tqdm
 
-torch.autograd.set_detect_anomaly(True) # detecteaza operatii care dau erori la backprop (pt debug)
+#torch.autograd.set_detect_anomaly(True) # detecteaza operatii care dau erori la backprop (pt debug)
 
 from model import YoloV1
 from loss import CostFunction
@@ -243,13 +243,11 @@ def main():
 	scaler = torch.amp.GradScaler('cuda', enabled=torch.cuda.is_available())
 	model = YoloV1().to(config.DEVICE)
 
-	if torch.cuda.device.count() > 1:
-		model = nn.DataParallel(model)
-
-	model = model.to(config.DEVICE)
-
-    #checkpoint = torch.load("weights/yolov1_epoch85.pth", map_location=config.DEVICE)
+	#checkpoint = torch.load("weights/yolov1_epoch85.pth", map_location=config.DEVICE)
     #model.load_state_dict(checkpoint)
+
+	if torch.cuda.device_count() > 1:
+		model = nn.DataParallel(model)
 
 	optimizer = optim.Adam(model.parameters(), lr=config.LEARNING_RATE, weight_decay=0.0005)
 	scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=3) # folosim un scheduler ca sa reduca learning rate-ul daca loss-ul stagneaza
