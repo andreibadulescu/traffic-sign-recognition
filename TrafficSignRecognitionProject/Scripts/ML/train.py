@@ -18,21 +18,21 @@ import gc
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 WEIGHTS_DIR = os.path.join(CURRENT_DIR, "weights")
 
-def transfer_learning(model, path):
-	oldWeights = torch.load(path, map_location=config.DEVICE) # load old weights for transfer learning
+# def transfer_learning(model, path):
+# 	oldWeights = torch.load(path, map_location=config.DEVICE) # load old weights for transfer learning
 
-	if "state_dict" in oldWeights:
-		oldWeights = oldWeights["state_dict"]
+# 	if "state_dict" in oldWeights:
+# 		oldWeights = oldWeights["state_dict"]
 
-	model_dict = model.state_dict()
-	pretrained_dict = {}
-	for k, v in oldWeights.items():
-		if k in model_dict and v.shape == model_dict[k].shape:
-			pretrained_dict[k] = v
+# 	model_dict = model.state_dict()
+# 	pretrained_dict = {}
+# 	for k, v in oldWeights.items():
+# 		if k in model_dict and v.shape == model_dict[k].shape:
+# 			pretrained_dict[k] = v
 
-    # update the model
-	model_dict.update(pretrained_dict)
-	model.load_state_dict(model_dict, strict=False)
+#     # update the model
+# 	model_dict.update(pretrained_dict)
+# 	model.load_state_dict(model_dict, strict=False)
 
 
 def train_fn(train_loader, model, optimizer, loss_fn, scaler):
@@ -104,36 +104,38 @@ def main():
 	current_label_dir = args.data_dir
 
 	detected_C = get_num_classes_from_labels(current_label_dir)
-
-	base_weights = os.path.join(WEIGHTS_DIR, "yolov1_epoch100.pth")
+	# base_weights = os.path.join(WEIGHTS_DIR, "yolov1_epoch100.pth")
 	retrained_weights_path = os.path.join(WEIGHTS_DIR, "yolov1_custom.pth")
 
-	if os.path.exists(retrained_weights_path):
-		weights_to_load = retrained_weights_path
-	else:
-		weights_to_load = base_weights
+	# if os.path.exists(retrained_weights_path):
+	# 	weights_to_load = retrained_weights_path
+	# else:
+	# 	weights_to_load = base_weights
+	# ----------------------------------------
 
 	model = YoloV1(nrClasses=detected_C).to(config.DEVICE)
 	loss_fn = CostFunction(C=detected_C)
 	scaler = torch.amp.GradScaler('cuda', enabled=torch.cuda.is_available())
 
-	transfer_learning(model, weights_to_load) # load old weights
+	# transfer_learning(model, weights_to_load) # load old weights
 
-	# freeze all blocks except the last layer
-	for name, parameters in model.named_parameters():
-		if "block_final" in name:
-			parameters.requires_grad = True
-		else:
-			parameters.requires_grad = False
-
+	# # freeze all blocks except the last layer
+	# for name, parameters in model.named_parameters():
+	# 	if "block_final" in name:
+	# 		parameters.requires_grad = True
+	# 	else:
+	# 		parameters.requires_grad = False
 
 	# optimizer only for active parameters
-	params_to_update = []
-	for p in model.parameters():
-		if p.requires_grad:
-			params_to_update.append(p)
+	# params_to_update = []
+	# for p in model.parameters():
+	# 	if p.requires_grad:
+	# 		params_to_update.append(p)
 
-	optimizer = optim.Adam(params_to_update, lr=config.LEARNING_RATE, weight_decay=0.0005)
+	# optimizer = optim.Adam(params_to_update, lr=config.LEARNING_RATE, weight_decay=0.0005)
+
+	optimizer = optim.Adam(model.parameters(), lr=config.LEARNING_RATE, weight_decay=0.0005)
+
 	scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=5) # folosim un scheduler ca sa reduca learning rate-ul daca loss-ul stagneaza
 
 
