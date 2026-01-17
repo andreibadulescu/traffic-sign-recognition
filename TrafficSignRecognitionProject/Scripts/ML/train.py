@@ -283,7 +283,7 @@ def main():
         shuffle=True,
         pin_memory=False,
         drop_last=False,
-        num_workers=4
+        num_workers=6
     )
 
 	for epoch in range(config.EPOCHS):
