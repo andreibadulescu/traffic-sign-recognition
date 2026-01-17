@@ -191,6 +191,7 @@
 # 4th module
 
 import torch
+import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 import os
@@ -239,33 +240,38 @@ def train_fn(train_loader, model, optimizer, loss_fn, scaler):
     return mean_loss_val
 
 def main():
-    scaler = torch.amp.GradScaler('cuda', enabled=torch.cuda.is_available())
-    model = YoloV1().to(config.DEVICE)
+	scaler = torch.amp.GradScaler('cuda', enabled=torch.cuda.is_available())
+	model = YoloV1().to(config.DEVICE)
+
+	if torch.cuda.device.count() > 1:
+		model = nn.DataParallel(model)
+
+	model = model.to(config.DEVICE)
 
     #checkpoint = torch.load("weights/yolov1_epoch85.pth", map_location=config.DEVICE)
     #model.load_state_dict(checkpoint)
 
-    optimizer = optim.Adam(model.parameters(), lr=config.LEARNING_RATE, weight_decay=0.0005)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=3) # folosim un scheduler ca sa reduca learning rate-ul daca loss-ul stagneaza
-    loss_fn = CostFunction()
+	optimizer = optim.Adam(model.parameters(), lr=config.LEARNING_RATE, weight_decay=0.0005)
+	scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=3) # folosim un scheduler ca sa reduca learning rate-ul daca loss-ul stagneaza
+	loss_fn = CostFunction()
 
-    files = os.listdir(config.TRAIN_IMG_DIR)
-    img_files = []
-    label_files = []
+	files = os.listdir(config.TRAIN_IMG_DIR)
+	img_files = []
+	label_files = []
 
-    for file in files:
-        if file.endswith(".jpg") or file.endswith(".png"):
-            img_path = os.path.join(config.TRAIN_IMG_DIR, file)
+	for file in files:
+		if file.endswith(".jpg") or file.endswith(".png"):
+			img_path = os.path.join(config.TRAIN_IMG_DIR, file)
 
-            # adaugam labeluri imaginilor
-            label_name = file.rsplit('.', 1)[0] + ".txt"
-            label_path = os.path.join(config.TRAIN_LABEL_DIR, label_name)
+			# adaugam labeluri imaginilor
+			label_name = file.rsplit('.', 1)[0] + ".txt"
+			label_path = os.path.join(config.TRAIN_LABEL_DIR, label_name)
 
-            if os.path.exists(label_path):
-                img_files.append(img_path)
-                label_files.append(label_path)
+			if os.path.exists(label_path):
+				img_files.append(img_path)
+				label_files.append(label_path)
 
-    train_dataset = GetData(
+	train_dataset = GetData(
         imgDir=img_files,
         labelsDir=label_files,
         S=config.S,
@@ -273,7 +279,7 @@ def main():
         C=config.C
     )
 
-    train_loader = DataLoader(
+	train_loader = DataLoader(
         dataset=train_dataset,
         batch_size=config.BATCH_SIZE,
         shuffle=True,
@@ -282,19 +288,23 @@ def main():
         num_workers=0
     )
 
-    for epoch in range(config.EPOCHS):
-        torch.cuda.empty_cache()
-        print(f"Epoch [{epoch+1}/{config.EPOCHS}]")
+	for epoch in range(config.EPOCHS):
+		torch.cuda.empty_cache()
+		print(f"Epoch [{epoch+1}/{config.EPOCHS}]")
 
-        mean_loss = train_fn(train_loader, model, optimizer, loss_fn, scaler) # antrenam o epoca
-        scheduler.step(mean_loss) # ajustam learning rate-ul
+		mean_loss = train_fn(train_loader, model, optimizer, loss_fn, scaler) # antrenam o epoca
+		scheduler.step(mean_loss) # ajustam learning rate-ul
 
-        # salvam modelul
-        if (epoch+1) % config.saveEvery == 0:
-          save_path = f"weights/yolov1_epoch{epoch+1}.pth"
-          torch.save(model.state_dict(), save_path)
-          print(f"Model salvat: {save_path}")
-          print("Model saved!")
+		# salvam modelul
+		if (epoch+1) % config.saveEvery == 0:
+			save_path = f"weights/yolov1_epoch{epoch+1}.pth"
+			if isinstance(model, nn.DataParallel):
+				torch.save(model.module.state_dict(), save_path)
+			else:
+				torch.save(model.state_dict(), save_path)
+
+			print(f"Model salvat: {save_path}")
+			print("Model saved!")
 
 if __name__ == "__main__":
     main()

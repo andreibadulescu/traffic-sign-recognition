@@ -1,8 +1,8 @@
-# 1st module 
+# 1st module
 
 # When creating a new neural network, you would usually go about creating a new class and inheriting from nn.Module, and defining two methods:
 # __init__ (the initializer, where you define your layers) and forward (the inference code of your module, where you use your layers).
-# That's all you need, since PyTorch will handle backward pass with Autograd. 
+# That's all you need, since PyTorch will handle backward pass with Autograd.
 
 
 import torch
@@ -68,18 +68,18 @@ class YoloV1(nn.Module):
             CNNBlock(1024, 1024, kernel_size=3, padding=1),
         )
 
-        # fully conected 
+        # fully conected
         self.head = nn.Sequential(
             nn.Flatten(),
             nn.Linear(1024 * self.S * self.S, 4096),
             nn.LeakyReLU(0.1),
             nn.Dropout(0.5),
-            nn.Linear(4096, self.S * self.S * self.outputDim) 
+            nn.Linear(4096, self.S * self.S * self.outputDim)
         )
 
     def forward(self, x):
         x = self.darknet(x)
-        x = self.fcs(x)
+        x = self.head(x)
         return x.reshape(-1, self.S, self.S, self.outputDim)
 
 # import torch
@@ -102,31 +102,31 @@ class YoloV1(nn.Module):
 #             )
 
 #         self.features = nn.Sequential(
-#             conv_block(3, 32, 3, 1, 1), 
-#             nn.MaxPool2d(2, 2), 
+#             conv_block(3, 32, 3, 1, 1),
+#             nn.MaxPool2d(2, 2),
 
 #             conv_block(32, 64, 3, 1, 1),
-#             nn.MaxPool2d(2, 2), 
+#             nn.MaxPool2d(2, 2),
 
 #             conv_block(64, 128, 3, 1, 1),
 #             conv_block(128, 128, 3, 1, 1),
-#             nn.MaxPool2d(2, 2), 
+#             nn.MaxPool2d(2, 2),
 
 #             conv_block(128, 256, 3, 1, 1),
 #             conv_block(256, 256, 3, 1, 1),
-#             nn.MaxPool2d(2, 2), 
+#             nn.MaxPool2d(2, 2),
 
 #             conv_block(256, 512, 3, 1, 1),
 #             conv_block(512, 512, 3, 1, 1),
-#             nn.MaxPool2d(2, 2), 
-            
-#             conv_block(512, 1024, 3, stride=2, padding=1), 
+#             nn.MaxPool2d(2, 2),
+
+#             conv_block(512, 1024, 3, stride=2, padding=1),
 #             conv_block(1024, 1024, 3, stride=1, padding=1),
 #         )
 
 #         self.fcs = nn.Sequential(
 #             nn.Flatten(),
-#             nn.Linear(1024 * 7 * 7, 4096), 
+#             nn.Linear(1024 * 7 * 7, 4096),
 #             nn.LeakyReLU(0.1),
 #             nn.Dropout(0.5),
 #             nn.Linear(4096, self.S * self.S * self.outputDim),

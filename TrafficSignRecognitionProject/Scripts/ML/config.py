@@ -2,7 +2,7 @@
 
 import torch
 
-DEVICE = "cpu"
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 PIN_MEMORY = False
 
 S = 7

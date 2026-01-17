@@ -15,7 +15,7 @@ class CostFunction(nn.Module):
     # 5) classification loss care se asigura ca sunt etichetate corect obiectele
 
 
-    def __init__(self, C=45):
+    def __init__(self, C=15):
         super(CostFunction, self).__init__()
 
         # yolo original foloseste Mean Squared Error
