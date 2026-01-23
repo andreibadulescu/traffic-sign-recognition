@@ -51,7 +51,22 @@
                 </StackPanel>
             </StackPanel>
 
-            <TextBlock x:Uid="Settings_About" Style="{ThemeResource SubtitleTextBlockStyle}" />
+            <TextBlock x:Uid="Settings_ModuleInstallation" Style="{ThemeResource SubtitleTextBlockStyle}" />
+
+            <StackPanel Margin="{StaticResource XSmallTopMargin}" Spacing="5">
+                <TextBlock Text="{x:Bind ViewModel.ModuleInstallStatus}" />
+                <HyperlinkButton
+                    x:Uid="Settings_ModuleInstallButton"
+                    Visibility="{x:Bind ViewModel.ModuleInstallVis, Mode=OneWay}"
+                    Command="{x:Bind ViewModel.SwitchVisibilityCommand}"
+                    Padding="0">
+                    <HyperlinkButton.CommandParameter>
+                        <xaml:Visibility>Collapsed</xaml:Visibility>
+                    </HyperlinkButton.CommandParameter>
+                </HyperlinkButton>
+            </StackPanel>
+            
+            <TextBlock x:Uid="Settings_About" Style="{ThemeResource SubtitleTextBlockStyle}" Padding="0,10,0,0" />
 
             <StackPanel Margin="{StaticResource XSmallTopMargin}">
                 <TextBlock Text="{x:Bind ViewModel.VersionDescription, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}" />

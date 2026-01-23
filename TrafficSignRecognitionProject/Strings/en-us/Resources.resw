@@ -206,4 +206,10 @@
   <data name="Detect_ResultAnnotatedPicture.Text" xml:space="preserve">
     <value>Open annotated frame</value>
   </data>
+  <data name="Settings_ModuleInstallation.Text" xml:space="preserve">
+    <value>Modules</value>
+  </data>
+  <data name="Settings_ModuleInstallButton.Content" xml:space="preserve">
+    <value>Install modules</value>
+  </data>
 </root>

@@ -83,6 +83,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="requirements.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\ML\config.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
